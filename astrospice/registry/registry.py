@@ -26,9 +26,12 @@ class RemoteKernel:
 
     def __str__(self):
         return '\n'.join([f'URL: {self.url}',
-                f'Start time: {self.start_time.iso}',
-                f'End time: {self.end_time.iso}',
-                f'Version: {self.version}'])
+                          f'Start time: {self.start_time.iso}',
+                          f'End time: {self.end_time.iso}',
+                          f'Version: {self.version}'])
+
+    def __lt__(self, other):
+        return self.version < other.version
 
 
 class RemoteKernelsBase:
