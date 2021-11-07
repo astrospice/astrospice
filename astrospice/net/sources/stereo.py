@@ -39,7 +39,11 @@ class STEREORecon:
                                      *matches[1:]))
 
         for k1, k2 in zip(kernel_urls[:-1], kernel_urls[1:]):
+            # Assume the end time of one kernel is the start time of the
+            # subsequent kernel
             k1.end_time = k2.start_time
+
+        # Mask the unknown end time of the most recent kernel
         kernel_urls[-1].end_time = Time(val=0, val2=np.nan, format='mjd')
 
         for k in kernel_urls:
@@ -81,7 +85,7 @@ class STEREOReconBehind(STEREORecon, RemoteKernelsBase):
 
 class STEREOPredAhead(RemoteKernelsBase):
     name = 'stereo-a'
-    type = 'pred'
+    type = 'predict'
 
     fname = 'ahead_2017_061_5295day_predict.epm.bsp'
 

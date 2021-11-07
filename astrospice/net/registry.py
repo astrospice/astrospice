@@ -31,6 +31,14 @@ class KernelRegistry:
         """
         return list(self._kernels.keys())
 
+    def check_name(self, name):
+        """
+        Raise an error if ``name`` isn't in the registry.
+        """
+        if name not in self.names:
+            raise ValueError(
+                f'{name} not in list of registered names: {self.names}')
+
     def get_available_kernels(self, name):
         """
         Get all the available kernels.
@@ -63,7 +71,31 @@ class KernelRegistry:
         return tables
 
     def get_latest_kernel(self, name, type):
+        self.check_name(name)
         return self._kernels[name][type].get_latest_kernel()
+
+    def get_kernels(self, name, type, *, trange=None):
+        """
+        Get a set of kernels. Any kernels not present locally will be
+        downloaded.
+
+        Parameters
+        ----------
+        name : str
+            Spacecraft name.
+        type : str
+            ``'recon'`` or ``'pred'`` to downloaded reconstructed or predicted
+            kernels respectively.
+        trange : tuple[Time], optional
+            If given, only get kernels to cover the given time range.
+
+        Returns
+        -------
+        list[Path]
+            List of local filepaths.
+        """
+        self.check_name(name)
+        return self._kernels[name][type].get_kernels(type, trange=trange)
 
 
 registry = KernelRegistry()
@@ -105,6 +137,7 @@ class RemoteKernel:
 class RemoteKernelsBase:
     def __init_subclass__(cls):
         registry._kernels[cls.name][cls.type] = cls()
+        assert cls.type in ['predict', 'recon']
 
     def get_latest_kernel(self):
         """
@@ -119,3 +152,31 @@ class RemoteKernelsBase:
         kernels = self.get_remote_kernels()
         k = sorted(kernels)[-1]
         return k.fetch()
+
+    def get_kernels(self, type, *):
+        """
+        Get a set of kernels. Any kernels not present locally will be
+        downloaded.
+
+        Parameters
+        ----------
+        type : str
+            ``'recon'`` or ``'pred'`` to downloaded reconstructed or predicted
+            kernels respectively.
+        trange : tuple[Time], optional
+            If given, only get kernels to cover the given time range.
+
+        Returns
+        -------
+        list[Path]
+            List of local filepaths.
+        """
+        kernels = self.get_remote_kernels()
+        if type == 'predict':
+            kernels = [max(kernels)]
+        dl = parfive.Downloader()
+        for k in kernels:
+            dl.enqueue_file(k.url, kernel_dir, k.fname)
+
+        result = dl.download()
+        return result.data
