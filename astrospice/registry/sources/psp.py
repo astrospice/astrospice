@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 from astropy.time import Time
 
-from astrospice.registry import RemoteKernelsBase
+from astrospice.registry import RemoteKernelsBase, RemoteKernel
 
 
 __all__ = ['PSPPredicted']
@@ -13,7 +13,12 @@ class PSPPredicted(RemoteKernelsBase):
     name = 'psp'
     type = 'predict'
 
-    def get_remote_links():
+    def get_remote_kernels(self):
+        """
+        Returns
+        -------
+        list[RemoteKernel]
+        """
         page = urlopen('https://sppgway.jhuapl.edu/lpredict_ephem')
         soup = BeautifulSoup(page, 'html.parser')
 
@@ -21,10 +26,16 @@ class PSPPredicted(RemoteKernelsBase):
         for link in soup.find_all('a'):
             href = link.get('href')
             if href is not None and href.startswith('/MOC/ephemerides//'):
-                kernel_urls.append(f'https://sppgway.jhuapl.edu/{href}')
+                fname = href.split('/')[-1]
+                matches = self.matches(fname)
+                if matches:
+                    kernel_urls.append(
+                        RemoteKernel(f'https://sppgway.jhuapl.edu/{href}',
+                                     *matches[1:]))
 
         return kernel_urls
 
+    @staticmethod
     def matches(fname):
         """
         Check if the given filename matches the pattern of this kernel.
