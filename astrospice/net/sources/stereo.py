@@ -2,6 +2,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 from astropy.time import Time
+import astropy.units as u
 import numpy as np
 
 from astrospice.net import RemoteKernelsBase, RemoteKernel
@@ -22,7 +23,8 @@ class STEREORecon:
         -------
         list[RemoteKernel]
         """
-        page = urlopen(f'{stereo_url}/depm/{self.spacecraft}/')
+        url = f'{stereo_url}/depm/{self.spacecraft}/'
+        page = urlopen(url)
         soup = BeautifulSoup(page, 'html.parser')
 
         kernel_urls = []
@@ -33,11 +35,12 @@ class STEREORecon:
                 matches = self.matches(fname)
                 if matches:
                     kernel_urls.append(
-                        RemoteKernel(f'https://sppgway.jhuapl.edu/{href}',
+                        RemoteKernel(f'{url}{href}',
                                      *matches[1:]))
 
         for k1, k2 in zip(kernel_urls[:-1], kernel_urls[1:]):
             k1.end_time = k2.start_time
+        kernel_urls[-1].end_time = Time(val=0, val2=np.nan, format='mjd')
 
         for k in kernel_urls:
             k.format = 'iso'
@@ -74,3 +77,19 @@ class STEREOReconAhead(STEREORecon, RemoteKernelsBase):
 class STEREOReconBehind(STEREORecon, RemoteKernelsBase):
     name = 'stereo-b'
     spacecraft = 'behind'
+
+
+class STEREOPredAhead(RemoteKernelsBase):
+    name = 'stereo-a'
+    type = 'pred'
+
+    fname = 'ahead_2017_061_5295day_predict.epm.bsp'
+
+    def get_remote_kernels(self):
+        start_time = Time.strptime('2017-061', '%Y-%j')
+        end_time = start_time + 5295 * u.day
+        return [RemoteKernel(f'{stereo_url}/epm/ahead/{self.fname}',
+                             start_time, end_time, 1)]
+
+    def matches(self, fname):
+        return fname == self.fname
