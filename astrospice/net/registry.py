@@ -58,8 +58,6 @@ class KernelRegistry:
                                  'End time': etimes}))
 
         tables = vstack(tables)
-        tables['Start time'].format = 'iso'
-        tables['End time'].format = 'iso'
         return tables
 
     def get_latest_kernel(self, name, type):
