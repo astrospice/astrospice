@@ -13,8 +13,18 @@ class KernelRegistry:
     def __init__(self):
         self._kernels = defaultdict(dict)
 
+    def __getitem__(self, idx):
+        return self._kernels[idx]
 
-kernels = KernelRegistry()
+    @property
+    def names(self):
+        return list(self._kernels.keys())
+
+    def get_remote_kernels(self, name, type):
+        return self._kernels[name][type].get_remote_kernels()
+
+
+registry = KernelRegistry()
 
 
 @dataclass
@@ -36,12 +46,11 @@ class RemoteKernel:
 
 class RemoteKernelsBase:
     def __init_subclass__(cls):
-        kernels._kernels[cls.name][cls.type] = cls
+        registry._kernels[cls.name][cls.type] = cls()
 
-
-def get_kernel(name, type=None):
-    """
-    Get a SPICE kernel.
-
-    If not present locally, will attempt to download.
-    """
+    def get_latest_kernel(self):
+        """
+        Download the latest version of the kernel.
+        """
+        kernels = self.get_remote_kernels()
+        latest_kernel = sorted(kernels)[-1]

@@ -2,3 +2,5 @@
 
 from .version import __version__
 __all__ = []
+
+from .registry import registry
