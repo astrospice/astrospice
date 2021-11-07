@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 from astropy.time import Time
 
-from astrospice.registry import RemoteKernelsBase, RemoteKernel
+from astrospice.net import RemoteKernelsBase, RemoteKernel
 
 
 __all__ = ['PSPPredicted']
