@@ -10,7 +10,7 @@ import pathlib
 from astropy.time import Time
 import parfive
 
-kernel_dir = pathlib.Path('~/Data/spice')
+kernel_dir = pathlib.Path('/Users/dstansby/Data/spice')
 
 
 class KernelRegistry:
@@ -22,9 +22,23 @@ class KernelRegistry:
 
     @property
     def names(self):
+        """
+        Names of the available kernels.
+        """
         return list(self._kernels.keys())
 
     def get_available_kernels(self, name, type):
+        """
+        Get all the available kernels.
+
+        Parameters
+        ----------
+        name : str
+        type : str
+
+        Returns
+        -------
+        """
         return self._kernels[name][type].get_remote_kernels()
 
     def get_latest_kernel(self, name, type):
@@ -54,6 +68,18 @@ class RemoteKernel:
     def fname(self):
         return self.url.split('/')[-1]
 
+    def fetch(self):
+        """
+        Get the kernel. If not present locally, will be downloaded.
+        """
+        local_path = kernel_dir / self.fname
+        if not local_path.exists():
+            dl = parfive.Downloader()
+            dl.enqueue_file(self.url, kernel_dir, self.fname)
+            dl.download()
+
+        return local_path
+
 
 class RemoteKernelsBase:
     def __init_subclass__(cls):
@@ -61,15 +87,14 @@ class RemoteKernelsBase:
 
     def get_latest_kernel(self):
         """
-        Download the latest version of the kernel.
+        Get the latest version of the kernel. If not present locally, will
+        be downloaded.
+
+        Returns
+        -------
+        kernel_path : pathlib.Path
+            Path to the local kernel file.
         """
         kernels = self.get_remote_kernels()
         k = sorted(kernels)[-1]
-
-        local_path = kernel_dir / k.fname
-        if not local_path.exists():
-            dl = parfive.Downloader()
-            dl.enqueue_file(k.url, kernel_dir, k.fname)
-            dl.download()
-
-        return local_path
+        return k.fetch()
