@@ -7,6 +7,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 import pathlib
 
+from astropy.table import Table, vstack
 from astropy.time import Time
 import parfive
 
@@ -16,6 +17,9 @@ kernel_dir = pathlib.Path('/Users/dstansby/Data/spice')
 class KernelRegistry:
     def __init__(self):
         self._kernels = defaultdict(dict)
+
+    def __str__(self):
+        return f'Known kernels: {self.names}'
 
     def __getitem__(self, idx):
         return self._kernels[idx]
@@ -27,7 +31,7 @@ class KernelRegistry:
         """
         return list(self._kernels.keys())
 
-    def get_available_kernels(self, name, type):
+    def get_available_kernels(self, name):
         """
         Get all the available kernels.
 
@@ -38,8 +42,25 @@ class KernelRegistry:
 
         Returns
         -------
+        astropy.table.Table
         """
-        return self._kernels[name][type].get_remote_kernels()
+        tables = []
+        for type in self._kernels[name]:
+            kernels = self._kernels[name][type].get_remote_kernels()
+            urls = [k.url for k in kernels]
+            stimes = [k.start_time for k in kernels]
+            etimes = [k.end_time for k in kernels]
+            versions = [k.version for k in kernels]
+            tables.append(Table({'Mission': [name] * len(urls),
+                                 'Type': [type] * len(urls),
+                                 'Version': versions,
+                                 'Start time': stimes,
+                                 'End time': etimes}))
+
+        tables = vstack(tables)
+        tables['Start time'].format = 'iso'
+        tables['End time'].format = 'iso'
+        return tables
 
     def get_latest_kernel(self, name, type):
         return self._kernels[name][type].get_latest_kernel()
