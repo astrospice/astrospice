@@ -5,8 +5,12 @@ A registry of SPICE kernels for various missions.
 """
 from collections import defaultdict
 from dataclasses import dataclass
+import pathlib
 
 from astropy.time import Time
+import parfive
+
+kernel_dir = pathlib.Path('~/Data/spice')
 
 
 class KernelRegistry:
@@ -20,8 +24,11 @@ class KernelRegistry:
     def names(self):
         return list(self._kernels.keys())
 
-    def get_remote_kernels(self, name, type):
+    def get_available_kernels(self, name, type):
         return self._kernels[name][type].get_remote_kernels()
+
+    def get_latest_kernel(self, name, type):
+        return self._kernels[name][type].get_latest_kernel()
 
 
 registry = KernelRegistry()
@@ -43,6 +50,10 @@ class RemoteKernel:
     def __lt__(self, other):
         return self.version < other.version
 
+    @property
+    def fname(self):
+        return self.url.split('/')[-1]
+
 
 class RemoteKernelsBase:
     def __init_subclass__(cls):
@@ -53,4 +64,12 @@ class RemoteKernelsBase:
         Download the latest version of the kernel.
         """
         kernels = self.get_remote_kernels()
-        latest_kernel = sorted(kernels)[-1]
+        k = sorted(kernels)[-1]
+
+        local_path = kernel_dir / k.fname
+        if not local_path.exists():
+            dl = parfive.Downloader()
+            dl.enqueue_file(k.url, kernel_dir, k.fname)
+            dl.download()
+
+        return local_path
