@@ -8,8 +8,8 @@ class ETEpoch(TimeFromEpoch):
     Seconds from 12 noon, Jan 1st 2000. This is the epoch that SPICE uses
     internally.
 
-    See also
-    --------
+    References
+    ----------
     https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/time.html#The%20J2000%20Epoch
     """
     name = 'et'

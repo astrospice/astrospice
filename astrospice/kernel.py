@@ -35,8 +35,8 @@ class SPKKernel(KernelBase):
     """
     A class for a single .spk kernel.
 
-    See also
-    --------
+    References
+    ----------
     https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html
     """
     def __init__(self, fname):
