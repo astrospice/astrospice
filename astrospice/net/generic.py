@@ -19,7 +19,7 @@ class GenericFile:
         if not self.local_path.exists():
             dl = parfive.Downloader()
             dl.enqueue_file(f'{self.url}/{self.fname}', kernel_dir, self.fname)
-            dl.download()[0]
+            dl.download()
 
         return self.local_path
 
