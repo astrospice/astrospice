@@ -144,7 +144,7 @@ class RemoteKernel:
             dl.enqueue_file(self.url, kernel_dir, self.fname)
             dl.download()
 
-        return SPKKernel(ocal_path)
+        return SPKKernel(local_path)
 
 
 class RemoteKernelsBase:
