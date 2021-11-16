@@ -58,8 +58,8 @@ class KernelRegistry:
         for type in self._kernels[body]:
             kernels = self._kernels[body][type].get_remote_kernels()
             urls = [k.url for k in kernels]
-            stimes = [k.start_time for k in kernels]
-            etimes = [k.end_time for k in kernels]
+            stimes = Time([k.start_time for k in kernels])
+            etimes = Time([k.end_time for k in kernels])
             versions = [k.version for k in kernels]
             tables.append(Table({'Mission': [body] * len(urls),
                                  'Type': [type] * len(urls),

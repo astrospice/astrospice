@@ -57,6 +57,8 @@ To download a set of kernels, use the ``.get_kernels()`` method::
 
   >>> kernels = registry.get_kernels('psp', 'predict')
 
+Kernels are downloaded to the astrospice cache directory.
+
 Generating coordinates
 ======================
 First, lets get a kernel. ``get_kernels`` will automatically furnish SPICE with
