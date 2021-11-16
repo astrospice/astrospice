@@ -2,6 +2,7 @@
 
 from .version import __version__
 
+from .time import *
 from .coords import *
 from .net import registry
 from astrospice.net.generic import setup_generic_files

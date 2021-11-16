@@ -72,5 +72,4 @@ class SPKKernel(KernelBase):
         """
         body = Body(body)
         coverage = [t for t in spiceypy.spkcov(self._fname_str, body.id)]
-        coverage = Time([spiceypy.et2datetime(t) for t in coverage])
-        return coverage
+        return Time(coverage, format='et').utc

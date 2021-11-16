@@ -73,7 +73,8 @@ date ranges the kernel covers::
 
   >>> k.bodies
   [Body(SOLAR PROBE PLUS)]
-  >>> k.coverage('SOLAR PROBE PLUS')
+  >>> k.coverage('SOLAR PROBE PLUS').iso
+  array(['2018-08-12 08:15:14.160', '2025-08-31 13:05:00.950'], dtype='<U23')
 
 API reference
 -------------
