@@ -16,7 +16,7 @@ def times(draw, min_time='1960-01-01', max_time='2024-01-01'):
     return Time(min_time) + draw(days) * u.day
 
 
-@settings(max_examples=100)
+@settings(max_examples=100, deadline=None)
 @given(time=times())
 def test_against_horizons(time):
     body = 'Earth'
