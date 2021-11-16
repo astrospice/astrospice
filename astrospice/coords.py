@@ -21,7 +21,7 @@ def generate_coords(body, times):
     times_et = np.atleast_1d(Time(times).et)
     # Spice needs a funny set of times
     abcorr = str(None)
-    frame = 'FK4'
+    frame = 'J2000'
 
     # Do the calculation
     pos_vel, lightTimes = spiceypy.spkezr(
@@ -33,5 +33,5 @@ def generate_coords(body, times):
 
     return SkyCoord(x=positions[:, 0],
                     y=positions[:, 1],
-                    z=positions[:, 2], frame='fk4',
+                    z=positions[:, 2], frame='icrs',
                     representation_type='cartesian')

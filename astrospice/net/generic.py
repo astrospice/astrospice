@@ -29,7 +29,7 @@ lsk = GenericFile(
     'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk')
 
 planets = GenericFile(
-    'de430.bsp',
+    'de440s.bsp',
     'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets'
 )
 
