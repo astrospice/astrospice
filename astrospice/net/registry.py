@@ -3,13 +3,13 @@
 ---------------------
 A registry of SPICE kernels for various missions.
 """
+import pathlib
 from collections import defaultdict
 from dataclasses import dataclass
-import pathlib
 
+import parfive
 from astropy.table import Table, vstack
 from astropy.time import Time
-import parfive
 
 kernel_dir = pathlib.Path('/Users/dstansby/Data/spice')
 
@@ -153,7 +153,7 @@ class RemoteKernelsBase:
         k = sorted(kernels)[-1]
         return k.fetch()
 
-    def get_kernels(self, type, *):
+    def get_kernels(self, type):
         """
         Get a set of kernels. Any kernels not present locally will be
         downloaded.

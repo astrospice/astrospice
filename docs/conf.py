@@ -8,14 +8,15 @@
 
 
 # -- Project information -----------------------------------------------------
+# The full version, including alpha/beta/rc tags
+from astrospice import __version__
+
+release = __version__
 
 project = 'astrospice'
 copyright = '2021, David Stansby'
 author = 'David Stansby'
 
-# The full version, including alpha/beta/rc tags
-from astrospice import __version__
-release = __version__
 
 # -- General configuration ---------------------------------------------------
 

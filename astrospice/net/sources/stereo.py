@@ -1,12 +1,11 @@
 from urllib.request import urlopen
-from bs4 import BeautifulSoup
 
-from astropy.time import Time
 import astropy.units as u
 import numpy as np
+from astropy.time import Time
+from bs4 import BeautifulSoup
 
-from astrospice.net import RemoteKernelsBase, RemoteKernel
-
+from astrospice.net import RemoteKernel, RemoteKernelsBase
 
 __all__ = ['STEREORecon']
 
