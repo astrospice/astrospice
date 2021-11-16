@@ -1,7 +1,10 @@
+from functools import wraps
+
 import astropy.units as u
 import numpy as np
 import spiceypy
 from astropy.coordinates import SkyCoord
+from astropy.coordinates.solar_system import solar_system_ephemeris
 from astropy.time import Time
 
 from astrospice.body import Body
@@ -9,6 +12,23 @@ from astrospice.body import Body
 __all__ = ['generate_coords']
 
 
+def use_astropy_ephem(outer):
+    @wraps(outer)
+    def inner(*args, **kwargs):
+        # If
+        ephem = solar_system_ephemeris.get()
+        known_ephem = ['de430', 'de432s', 'de440', 'de440s']
+        if ephem not in known_ephem:
+            ephem = 'de440s'
+        kernel = solar_system_ephemeris.get_kernel(ephem)
+        spiceypy.furnsh(kernel.daf.file.name)
+
+        result = outer(*args, **kwargs)
+        return result
+    return inner
+
+
+@use_astropy_ephem
 def generate_coords(body, times):
     """
     Generate coordinates.

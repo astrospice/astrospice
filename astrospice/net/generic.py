@@ -28,12 +28,7 @@ lsk = GenericFile(
     'naif0012.tls',
     'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk')
 
-planets = GenericFile(
-    'de440s.bsp',
-    'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets'
-)
-
 
 def _setup_generic_files():
-    for k in [lsk, planets]:
+    for k in [lsk]:
         spiceypy.furnsh(str(k.fetch()))
