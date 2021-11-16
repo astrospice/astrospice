@@ -64,7 +64,7 @@ the kernels it finds::
 
   >>> k = kernels[0]
   >>> type(k)
-  <class 'astrospice.coords.kernel.SPKKernel'>
+  <class 'astrospice.kernel.SPKKernel'>
   >>> print(k)
   SPK Kernel for Solar probe plus
 
