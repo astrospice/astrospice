@@ -10,7 +10,7 @@ __all__ = ['PSPPredict', 'PSPRecon']
 
 
 class PSPPredict(RemoteKernelsBase):
-    name = 'psp'
+    body = 'psp'
     type = 'predict'
 
     def get_remote_kernels(self):
@@ -61,7 +61,7 @@ class PSPPredict(RemoteKernelsBase):
 
 
 class PSPRecon(RemoteKernelsBase):
-    name = 'psp'
+    body = 'psp'
     type = 'recon'
 
     def get_remote_kernels(self):

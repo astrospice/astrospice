@@ -16,12 +16,12 @@ registry::
   >>> from astrospice import registry
 
 
-The available missions can be seen by printing the registry::
+The available bodies can be seen by printing the registry::
 
   >>> print(registry)
   Known kernels: ['psp']
 
-Available kernels for individual missions can be queried using `get_available_kernels`::
+Available kernels for individual bodies can be queried using `get_available_kernels`::
 
   >>> registry.get_available_kernels('psp')
   <Table length=20>
@@ -49,7 +49,7 @@ Available kernels for individual missions can be queried using `get_available_ke
       psp   recon       1 2018-10-08 00:00:00.000 2019-01-20 00:00:00.000
       psp   recon       1 2018-08-12 00:00:00.000 2018-10-08 00:00:00.000
 
-The first columns shows the queried mission. The second columns shows the type
+The first columns shows the queried body. The second columns shows the type
 of kernel. This is either 'predict', for predicted ephemeris, or 'recon' for
 reconstructed ephemeris. The third column shows the version (typically used
 for updates to reconstructed kernels), and the last two columns show the
@@ -57,9 +57,13 @@ start and end times covered by each kernel, if known.
 
 Downloading kernels
 -------------------
-To download a set of kernels, use the ``.download_kernels()`` method::
+To download a set of kernels, use the ``.get_kernels()`` method::
 
-  >>> registry.download_kernels('psp', 'predict')
+  >>> registry.get_kernels('psp', 'predict')
+
+
+Generating coordinates
+======================
 
 Indices and tables
 ==================

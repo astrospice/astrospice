@@ -74,17 +74,17 @@ class STEREORecon:
 
 
 class STEREOReconAhead(STEREORecon, RemoteKernelsBase):
-    name = 'stereo-a'
+    body = 'stereo-a'
     spacecraft = 'ahead'
 
 
 class STEREOReconBehind(STEREORecon, RemoteKernelsBase):
-    name = 'stereo-b'
+    body = 'stereo-b'
     spacecraft = 'behind'
 
 
 class STEREOPredAhead(RemoteKernelsBase):
-    name = 'stereo-a'
+    body = 'stereo-a'
     type = 'predict'
 
     fname = 'ahead_2017_061_5295day_predict.epm.bsp'

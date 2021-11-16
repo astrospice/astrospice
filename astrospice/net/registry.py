@@ -19,33 +19,33 @@ class KernelRegistry:
         self._kernels = defaultdict(dict)
 
     def __str__(self):
-        return f'Known kernels: {self.names}'
+        return f'Known kernels: {self.bodies}'
 
     def __getitem__(self, idx):
         return self._kernels[idx]
 
     @property
-    def names(self):
+    def bodies(self):
         """
-        Names of the available kernels.
+        Bodies with available kernes.
         """
         return list(self._kernels.keys())
 
-    def check_name(self, name):
+    def check_body(self, body):
         """
-        Raise an error if ``name`` isn't in the registry.
+        Raise an error if ``body`` isn't in the registry.
         """
-        if name not in self.names:
+        if body not in self.bodies:
             raise ValueError(
-                f'{name} not in list of registered names: {self.names}')
+                f'{body} not in list of registered bodies: {self.bodies}')
 
-    def get_available_kernels(self, name):
+    def get_available_kernels(self, body):
         """
         Get all the available kernels.
 
         Parameters
         ----------
-        name : str
+        body : str
         type : str
 
         Returns
@@ -53,13 +53,13 @@ class KernelRegistry:
         astropy.table.Table
         """
         tables = []
-        for type in self._kernels[name]:
-            kernels = self._kernels[name][type].get_remote_kernels()
+        for type in self._kernels[body]:
+            kernels = self._kernels[body][type].get_remote_kernels()
             urls = [k.url for k in kernels]
             stimes = [k.start_time for k in kernels]
             etimes = [k.end_time for k in kernels]
             versions = [k.version for k in kernels]
-            tables.append(Table({'Mission': [name] * len(urls),
+            tables.append(Table({'Mission': [body] * len(urls),
                                  'Type': [type] * len(urls),
                                  'Version': versions,
                                  'Start time': stimes,
@@ -70,19 +70,19 @@ class KernelRegistry:
         tables['End time'].format = 'iso'
         return tables
 
-    def get_latest_kernel(self, name, type):
-        self.check_name(name)
-        return self._kernels[name][type].get_latest_kernel()
+    def get_latest_kernel(self, body, type):
+        self.check_body(body)
+        return self._kernels[body][type].get_latest_kernel()
 
-    def get_kernels(self, name, type, *, trange=None):
+    def get_kernels(self, body, type, *, trange=None):
         """
         Get a set of kernels. Any kernels not present locally will be
         downloaded.
 
         Parameters
         ----------
-        name : str
-            Spacecraft name.
+        body : str
+            Spacecraft body.
         type : str
             ``'recon'`` or ``'pred'`` to downloaded reconstructed or predicted
             kernels respectively.
@@ -94,8 +94,8 @@ class KernelRegistry:
         list[Path]
             List of local filepaths.
         """
-        self.check_name(name)
-        return self._kernels[name][type].get_kernels(type, trange=trange)
+        self.check_body(body)
+        return self._kernels[body][type].get_kernels(type, trange=trange)
 
 
 registry = KernelRegistry()
@@ -136,7 +136,7 @@ class RemoteKernel:
 
 class RemoteKernelsBase:
     def __init_subclass__(cls):
-        registry._kernels[cls.name][cls.type] = cls()
+        registry._kernels[cls.body][cls.type] = cls()
         assert cls.type in ['predict', 'recon']
 
     def get_latest_kernel(self):
