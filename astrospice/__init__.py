@@ -3,6 +3,7 @@
 import astrospice.time
 from astrospice.net.generic import _setup_generic_files
 from .body import *
+from .config import *
 from .coords import *
 from .kernel import *
 from .net import registry

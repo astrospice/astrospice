@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import parfive
 import spiceypy
 
-from .reg import kernel_dir
+from astrospice.config import get_cache_dir
 
 
 @dataclass
@@ -13,12 +13,12 @@ class GenericFile:
 
     @property
     def local_path(self):
-        return kernel_dir / self.fname
+        return get_cache_dir() / self.fname
 
     def fetch(self):
         if not self.local_path.exists():
             dl = parfive.Downloader()
-            dl.enqueue_file(f'{self.url}/{self.fname}', kernel_dir, self.fname)
+            dl.enqueue_file(f'{self.url}/{self.fname}', get_cache_dir(), self.fname)
             dl.download()
 
         return self.local_path

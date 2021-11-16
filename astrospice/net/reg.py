@@ -3,7 +3,6 @@
 ---------------------
 A registry of SPICE kernels for various missions.
 """
-import pathlib
 from collections import defaultdict
 from dataclasses import dataclass
 
@@ -11,9 +10,8 @@ import parfive
 from astropy.table import Table, vstack
 from astropy.time import Time
 
+from astrospice.config import get_cache_dir
 from astrospice.kernel import SPKKernel
-
-kernel_dir = pathlib.Path('/Users/dstansby/Data/spice')
 
 __all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase', 'registry']
 
@@ -138,10 +136,10 @@ class RemoteKernel:
         -------
         `astrospice.coords.SPKKernel`
         """
-        local_path = kernel_dir / self.fname
+        local_path = get_cache_dir() / self.fname
         if not local_path.exists():
             dl = parfive.Downloader()
-            dl.enqueue_file(self.url, kernel_dir, self.fname)
+            dl.enqueue_file(self.url, get_cache_dir(), self.fname)
             dl.download()
 
         return SPKKernel(local_path)
@@ -188,7 +186,7 @@ class RemoteKernelsBase:
             kernels = [max(kernels)]
         dl = parfive.Downloader()
         for k in kernels:
-            dl.enqueue_file(k.url, kernel_dir, k.fname)
+            dl.enqueue_file(k.url, get_cache_dir(), k.fname)
 
         result = dl.download()
         return [SPKKernel(f) for f in result.data]
