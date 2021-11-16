@@ -19,12 +19,12 @@ registry::
 The available bodies can be seen by printing the registry::
 
   >>> print(registry)
-  Known kernels: ['psp']
+  Known kernels: ['psp', 'stereo-a', 'stereo-b']
 
 Available kernels for individual bodies can be queried using `get_available_kernels`::
 
   >>> registry.get_available_kernels('psp')
-  <Table length=20>
+  <Table length=21>
   Mission   Type  Version        Start time               End time
     str3    str7   int64            Time                    Time
   ------- ------- ------- ----------------------- -----------------------
@@ -32,6 +32,7 @@ Available kernels for individual bodies can be queried using `get_available_kern
       psp predict      37 2018-08-12 00:00:00.000 2025-08-31 00:00:00.000
       psp predict      36 2018-08-12 00:00:00.000 2025-08-31 00:00:00.000
       psp predict      35 2018-08-12 00:00:00.000 2025-08-31 00:00:00.000
+      psp   recon       1 2021-09-04 00:00:00.000 2021-11-04 00:00:00.000
       psp   recon       1 2021-07-23 00:00:00.000 2021-09-04 00:00:00.000
       psp   recon       1 2021-05-24 00:00:00.000 2021-07-23 00:00:00.000
       psp   recon       1 2021-03-25 00:00:00.000 2021-05-25 00:00:00.000

@@ -4,7 +4,7 @@ from astropy.table import Table
 from astrospice import registry as spice_reg
 
 
-@pytest.mark.parametrize('name', spice_reg.names)
-def test_search(name):
-    kernels = spice_reg.get_available_kernels(name)
+@pytest.mark.parametrize('body', spice_reg.bodies)
+def test_search(body):
+    kernels = spice_reg.get_available_kernels(body)
     assert isinstance(kernels, Table)
