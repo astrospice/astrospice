@@ -6,6 +6,9 @@ import spiceypy
 from astrospice.coords.body import Body
 
 
+__all__ = ['KernelBase', 'SPKKernel']
+
+
 class KernelBase:
     """
     Class for a single kernel.

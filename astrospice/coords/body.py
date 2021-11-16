@@ -1,5 +1,7 @@
 import spiceypy
 
+__all__ = ['Body']
+
 
 class Body:
     """
@@ -19,7 +21,7 @@ class Body:
             raise ValueError('body must be an int or str')
 
     def __repr__(self):
-        return f'{super().__repr__()}, name={self.name}, id={self.id}'
+        return f'Body({self.name})'
 
     def __eq__(self, other):
         return isinstance(other, Body) and other.id == self.id
