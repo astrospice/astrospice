@@ -1,1 +1,1 @@
-from .registry import *
+from .reg import *

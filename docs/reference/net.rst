@@ -53,7 +53,7 @@ Downloading kernels
 -------------------
 To download a set of kernels, use the ``.get_kernels()`` method::
 
-  >>> registry.get_kernels('psp', 'predict')
+  >>> registry.get_kernels('psp', 'predict')  # doctest: +SKIP
 
 API reference
 -------------

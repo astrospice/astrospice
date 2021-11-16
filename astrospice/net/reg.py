@@ -13,7 +13,7 @@ from astropy.time import Time
 
 kernel_dir = pathlib.Path('/Users/dstansby/Data/spice')
 
-__all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase']
+__all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase', 'registry']
 
 
 class KernelRegistry:
@@ -29,7 +29,7 @@ class KernelRegistry:
     @property
     def bodies(self):
         """
-        Bodies with available kernes.
+        Bodies with available kernels.
         """
         return list(self._kernels.keys())
 
@@ -155,7 +155,7 @@ class RemoteKernelsBase:
         k = sorted(kernels)[-1]
         return k.fetch()
 
-    def get_kernels(self, type):
+    def get_kernels(self, type, *, trange=None):
         """
         Get a set of kernels. Any kernels not present locally will be
         downloaded.

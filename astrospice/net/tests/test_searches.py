@@ -1,10 +1,10 @@
 import pytest
 from astropy.table import Table
 
-from astrospice import registry as spice_reg
+from astrospice.net import registry
 
 
-@pytest.mark.parametrize('body', spice_reg.bodies)
+@pytest.mark.parametrize('body', registry.bodies)
 def test_search(body):
-    kernels = spice_reg.get_available_kernels(body)
+    kernels = registry.get_available_kernels(body)
     assert isinstance(kernels, Table)
