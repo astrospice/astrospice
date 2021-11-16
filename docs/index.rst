@@ -1,10 +1,10 @@
 This is the documentation for astrospice.
 
 Finding kernels
----------------
+===============
 
 Using the kernel registry
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 ``astrospice`` has a built in registry of kernels. Lets start by loading the
 registry::
 
@@ -52,13 +52,13 @@ for updates to reconstructed kernels), and the last two columns show the
 start and end times covered by each kernel, if known.
 
 Downloading kernels
-~~~~~~~~~~~~~~~~~~~
+-------------------
 To download a set of kernels, use the ``.get_kernels()`` method::
 
   >>> kernels = registry.get_kernels('psp', 'predict')
 
 Generating coordinates
-----------------------
+======================
 First, lets get a kernel. ``get_kernels`` will automatically furnish SPICE with
 the kernels it finds::
 
@@ -77,14 +77,8 @@ date ranges the kernel covers::
   array(['2018-08-12 08:15:14.160', '2025-08-31 13:05:00.950'], dtype='<U23')
 
 API reference
--------------
+=============
 
 .. automodapi:: astrospice
-   :no-heading:
 
-Indices and tables
-------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. automodapi:: astrospice.time

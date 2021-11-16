@@ -3,7 +3,7 @@ from urllib.request import urlopen
 from astropy.time import Time
 from bs4 import BeautifulSoup
 
-from astrospice.net import RemoteKernel, RemoteKernelsBase
+from astrospice.net.reg import RemoteKernel, RemoteKernelsBase
 
 __all__ = ['PSPPredict', 'PSPRecon']
 

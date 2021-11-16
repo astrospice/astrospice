@@ -3,7 +3,7 @@
 from astrospice.net.generic import setup_generic_files
 from .coords import *
 from .net import registry
-from .time import *
+import astrospice.time
 from .version import __version__
 
 setup_generic_files()

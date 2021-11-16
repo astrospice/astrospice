@@ -5,7 +5,7 @@ import numpy as np
 from astropy.time import Time
 from bs4 import BeautifulSoup
 
-from astrospice.net import RemoteKernel, RemoteKernelsBase
+from astrospice.net.reg import RemoteKernel, RemoteKernelsBase
 
 __all__ = ['STEREORecon']
 

@@ -54,8 +54,9 @@ master_doc = 'index'
 
 # -- Options for intersphinx extension ---------------------------------------
 
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'https://docs.python.org/': None,
+    'astropy': ("https://docs.astropy.org/en/stable/", None)}
 
 # -- Options for HTML output -------------------------------------------------
 
