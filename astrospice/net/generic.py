@@ -23,11 +23,17 @@ class GenericFile:
 
         return self.local_path
 
+
 lsk = GenericFile(
     'naif0012.tls',
     'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk')
 
+planets = GenericFile(
+    'de430.bsp',
+    'https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets'
+)
 
-def setup_generic_files():
-    for k in [lsk]:
+
+def _setup_generic_files():
+    for k in [lsk, planets]:
         spiceypy.furnsh(str(k.fetch()))

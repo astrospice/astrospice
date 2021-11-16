@@ -11,7 +11,7 @@ import parfive
 from astropy.table import Table, vstack
 from astropy.time import Time
 
-from astrospice.coords import SPKKernel
+from astrospice.kernel import SPKKernel
 
 kernel_dir = pathlib.Path('/Users/dstansby/Data/spice')
 
