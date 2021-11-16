@@ -3,3 +3,4 @@
 *.pyc
 
 docs/_build
+docs/api

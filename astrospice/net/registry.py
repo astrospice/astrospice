@@ -13,6 +13,8 @@ from astropy.time import Time
 
 kernel_dir = pathlib.Path('/Users/dstansby/Data/spice')
 
+__all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase']
+
 
 class KernelRegistry:
     def __init__(self):
