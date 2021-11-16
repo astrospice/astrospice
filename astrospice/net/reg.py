@@ -11,6 +11,8 @@ import parfive
 from astropy.table import Table, vstack
 from astropy.time import Time
 
+from astrospice.coords import SPKKernel
+
 kernel_dir = pathlib.Path('/Users/dstansby/Data/spice')
 
 __all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase', 'registry']
@@ -73,6 +75,11 @@ class KernelRegistry:
         return tables
 
     def get_latest_kernel(self, body, type):
+        """
+        Returns
+        -------
+        `astrospice.coords.SPKKernel`
+        """
         self.check_body(body)
         return self._kernels[body][type].get_latest_kernel()
 
@@ -126,6 +133,10 @@ class RemoteKernel:
     def fetch(self):
         """
         Get the kernel. If not present locally, will be downloaded.
+
+        Returns
+        -------
+        `astrospice.coords.SPKKernel`
         """
         local_path = kernel_dir / self.fname
         if not local_path.exists():
@@ -133,7 +144,7 @@ class RemoteKernel:
             dl.enqueue_file(self.url, kernel_dir, self.fname)
             dl.download()
 
-        return local_path
+        return SPKKernel(ocal_path)
 
 
 class RemoteKernelsBase:
@@ -148,8 +159,7 @@ class RemoteKernelsBase:
 
         Returns
         -------
-        kernel_path : pathlib.Path
-            Path to the local kernel file.
+        `astrospice.coords.SPKKernel`
         """
         kernels = self.get_remote_kernels()
         k = sorted(kernels)[-1]
@@ -170,8 +180,8 @@ class RemoteKernelsBase:
 
         Returns
         -------
-        list[Path]
-            List of local filepaths.
+        list[astrospice.coords.SPKKernel]
+            List of kernels.
         """
         kernels = self.get_remote_kernels()
         if type == 'predict':
@@ -181,4 +191,4 @@ class RemoteKernelsBase:
             dl.enqueue_file(k.url, kernel_dir, k.fname)
 
         result = dl.download()
-        return result.data
+        return [SPKKernel(f) for f in result.data]
