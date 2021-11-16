@@ -1,2 +1,2 @@
-from astrospice.net.reg import *
 import astrospice.net.sources
+from astrospice.net.reg import *
