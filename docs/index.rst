@@ -81,7 +81,7 @@ date ranges the kernel covers::
 Solar system ephemeris
 ----------------------
 If a JPL ephemeris is set in astropy, astrospice will automatically use it. If
-not, the 'de440s' ephemeris will be used by deafult. To set a different ephemeris,
+not, the 'de432s' ephemeris will be used by deafult. To set a different ephemeris,
 see the astropy documentation.
 
 API reference

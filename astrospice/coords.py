@@ -19,7 +19,7 @@ def use_astropy_ephem(outer):
         ephem = solar_system_ephemeris.get()
         known_ephem = ['de430', 'de432s', 'de440', 'de440s']
         if ephem not in known_ephem:
-            ephem = 'de440s'
+            ephem = 'de432s'
         kernel = solar_system_ephemeris.get_kernel(ephem)
         spiceypy.furnsh(kernel.daf.file.name)
 
