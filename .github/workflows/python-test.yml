@@ -17,13 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: linux py37-mindeps
-            os: ubuntu-20.04
-            python-version: '3.7'
-            pip-extras: '"sunpy<3.1" "astropy<4.2"'
-          - name: linux py38
+          - name: linux py38-mindeps
             os: ubuntu-20.04
             python-version: '3.8'
+            pip-extras: '"sunpy<3.1" "astropy<4.3"'
           - name: linux py39
             os: ubuntu-20.04
             python-version: '3.9'
