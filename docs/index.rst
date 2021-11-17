@@ -21,7 +21,7 @@ Available kernels for individual bodies can be queried using `get_available_kern
   >>> registry.get_available_kernels('psp')
   <Table length=21>
   Mission   Type  Version        Start time               End time
-    str3    str7   int64            Time                    Time
+  ...
   ------- ------- ------- ----------------------- -----------------------
       psp predict      38 2018-08-12 00:00:00.000 2025-08-31 00:00:00.000
       psp predict      37 2018-08-12 00:00:00.000 2025-08-31 00:00:00.000
