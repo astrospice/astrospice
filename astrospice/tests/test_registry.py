@@ -3,6 +3,9 @@ from astropy.table import Table
 
 from astrospice import registry
 
+# Ignore dubious year warnings for years a while in the future
+pytestmark = pytest.mark.filterwarnings(r'ignore:ERFA function.*dubious year')
+
 
 @pytest.mark.parametrize('body', registry.bodies)
 def test_search(body):
