@@ -1,6 +1,7 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
 import astrospice.time
+from astrospice.net.generic import *
 from astrospice.net.generic import _setup_generic_files
 from .body import *
 from .config import *
@@ -9,4 +10,4 @@ from .kernel import *
 from .net import registry
 from .version import __version__
 
-solar_system_ephemeris = _setup_generic_files()
+_setup_generic_files()
