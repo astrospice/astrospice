@@ -7,6 +7,7 @@ import abc
 from collections import defaultdict
 from dataclasses import dataclass
 
+import astropy.time
 import parfive
 from astropy.table import Table, vstack
 from astropy.time import Time
@@ -77,7 +78,7 @@ class KernelRegistry:
         """
         Returns
         -------
-        `astrospice.coords.SPKKernel`
+        astrospice.SPKKernel
         """
         self.check_body(body)
         return self._kernels[body][type].get_latest_kernel()
@@ -101,7 +102,7 @@ class KernelRegistry:
 
         Returns
         -------
-        list[Path]
+        list[pathlib.Path]
             List of local filepaths.
         """
         self.check_body(body)
@@ -115,8 +116,8 @@ registry = KernelRegistry()
 @dataclass
 class RemoteKernel:
     url: str
-    start_time: Time
-    end_time: Time
+    start_time: astropy.time.Time
+    end_time: astropy.time.Time
     version: int
 
     def __str__(self):
@@ -138,7 +139,7 @@ class RemoteKernel:
 
         Returns
         -------
-        `astrospice.coords.SPKKernel`
+        astrospice.SPKKernel
         """
         local_path = get_cache_dir() / self.fname
         if not local_path.exists():
@@ -161,7 +162,7 @@ class RemoteKernelsBase(abc.ABC):
 
         Returns
         -------
-        `astrospice.coords.SPKKernel`
+        astrospice.SPKKernel
         """
         kernels = self.get_remote_kernels()
         k = sorted(kernels)[-1]
@@ -179,12 +180,12 @@ class RemoteKernelsBase(abc.ABC):
             kernels respectively.
         version : int, optional
             If given, get only this version of the kernel.
-        trange : tuple[Time], optional
+        trange : tuple[astropy.time.Time], optional
             If given, only get kernels to cover the given time range.
 
         Returns
         -------
-        list[astrospice.coords.SPKKernel]
+        list[astrospice.SPKKernel]
             List of kernels.
 
         Raises
