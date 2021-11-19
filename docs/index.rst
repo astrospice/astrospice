@@ -8,4 +8,5 @@ orientations. For more information, see https://naif.jpl.nasa.gov/naif/
 
    installing
    guide
+   auto_examples/index
    reference
