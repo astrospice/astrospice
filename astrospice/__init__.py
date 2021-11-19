@@ -9,4 +9,4 @@ from .kernel import *
 from .net import registry
 from .version import __version__
 
-_setup_generic_files()
+solar_system_ephemeris = _setup_generic_files()

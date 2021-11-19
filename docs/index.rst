@@ -19,15 +19,16 @@ The available bodies can be seen by printing the registry::
 Available kernels for individual bodies can be queried using `get_available_kernels`::
 
   >>> registry.get_available_kernels('psp')
-  <Table length=21>
+  <Table length=...>
   Mission   Type  Version        Start time               End time
   ...
   ------- ------- ------- ----------------------- -----------------------
+  ...
       psp predict      38 2018-08-12 00:00:00.000 2025-08-31 00:00:00.000
       psp predict      37 2018-08-12 00:00:00.000 2025-08-31 00:00:00.000
       psp predict      36 2018-08-12 00:00:00.000 2025-08-31 00:00:00.000
       psp predict      35 2018-08-12 00:00:00.000 2025-08-31 00:00:00.000
-      psp   recon       1 2021-09-04 00:00:00.000 2021-11-04 00:00:00.000
+  ...
       psp   recon       1 2021-07-23 00:00:00.000 2021-09-04 00:00:00.000
       psp   recon       1 2021-05-24 00:00:00.000 2021-07-23 00:00:00.000
       psp   recon       1 2021-03-25 00:00:00.000 2021-05-25 00:00:00.000
@@ -55,9 +56,12 @@ Downloading kernels
 -------------------
 To download a set of kernels, use the ``.get_kernels()`` method::
 
-  >>> kernels = registry.get_kernels('psp', 'predict')
+  >>> kernels = registry.get_kernels('psp', 'predict', version=35)
 
-Kernels are downloaded to the astrospice cache directory.
+Kernels are downloaded to the astrospice cache directory. Note that in this
+example a specific version of the kernel is downloaded to make the results
+below reproducible. Omitting the ``version`` keyword argument will get the
+latest version of the kernel.
 
 Generating coordinates
 ======================
@@ -76,7 +80,7 @@ date ranges the kernel covers::
   >>> k.bodies
   [Body(SOLAR PROBE PLUS)]
   >>> k.coverage('SOLAR PROBE PLUS').iso
-  array(['2018-08-12 08:15:14.160', '2025-08-31 13:05:00.950'], dtype='<U23')
+  array(['2018-08-12 08:15:14.160', '2025-08-31 09:11:39.190'], dtype='<U23')
 
 Solar system ephemeris
 ----------------------

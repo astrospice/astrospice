@@ -5,6 +5,7 @@ from astropy.tests.helper import assert_quantity_allclose
 from astropy.time import Time
 from hypothesis import given, settings
 
+import astrospice
 from astrospice import generate_coords
 
 
@@ -21,7 +22,8 @@ def times(draw, min_time='1960-01-01', max_time='2024-01-01'):
 def test_against_horizons(time):
     body = 'Earth'
 
-    horizons_coord = get_body(body, time, ephemeris='de440s')
+    horizons_coord = get_body(body, time,
+                              ephemeris=astrospice.solar_system_ephemeris)
     astrospice_coord = generate_coords(body, time)
     assert_quantity_allclose(horizons_coord.separation_3d(astrospice_coord),
                              0*u.km, atol=50*u.m)

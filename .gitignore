@@ -5,5 +5,5 @@
 docs/_build
 docs/api
 
-.coverage
+.coverage*
 .hypothesis

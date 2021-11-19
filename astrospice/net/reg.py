@@ -3,6 +3,7 @@
 ---------------------
 A registry of SPICE kernels for various missions.
 """
+import abc
 from collections import defaultdict
 from dataclasses import dataclass
 
@@ -81,7 +82,7 @@ class KernelRegistry:
         self.check_body(body)
         return self._kernels[body][type].get_latest_kernel()
 
-    def get_kernels(self, body, type, *, trange=None):
+    def get_kernels(self, body, type, *, version=None, trange=None):
         """
         Get a set of kernels. Any kernels not present locally will be
         downloaded.
@@ -93,6 +94,8 @@ class KernelRegistry:
         type : str
             ``'recon'`` or ``'pred'`` to downloaded reconstructed or predicted
             kernels respectively.
+        version : int, optional
+            If given, get only kernels with this version.
         trange : tuple[Time], optional
             If given, only get kernels to cover the given time range.
 
@@ -102,7 +105,8 @@ class KernelRegistry:
             List of local filepaths.
         """
         self.check_body(body)
-        return self._kernels[body][type].get_kernels(type, trange=trange)
+        return self._kernels[body][type].get_kernels(
+            type, version=version, trange=trange)
 
 
 registry = KernelRegistry()
@@ -145,7 +149,7 @@ class RemoteKernel:
         return SPKKernel(local_path)
 
 
-class RemoteKernelsBase:
+class RemoteKernelsBase(abc.ABC):
     def __init_subclass__(cls):
         registry._kernels[cls.body][cls.type] = cls()
         assert cls.type in ['predict', 'recon']
@@ -163,7 +167,7 @@ class RemoteKernelsBase:
         k = sorted(kernels)[-1]
         return k.fetch()
 
-    def get_kernels(self, type, *, trange=None):
+    def get_kernels(self, type, *, version=None, trange=None):
         """
         Get a set of kernels. Any kernels not present locally will be
         downloaded.
@@ -173,6 +177,8 @@ class RemoteKernelsBase:
         type : str
             ``'recon'`` or ``'pred'`` to downloaded reconstructed or predicted
             kernels respectively.
+        version : int, optional
+            If given, get only this version of the kernel.
         trange : tuple[Time], optional
             If given, only get kernels to cover the given time range.
 
@@ -180,8 +186,25 @@ class RemoteKernelsBase:
         -------
         list[astrospice.coords.SPKKernel]
             List of kernels.
+
+        Raises
+        ------
+        ValueError
+            If there are no kernels available for the given type, version, and
+            timerange.
         """
         kernels = self.get_remote_kernels()
+        if version is not None:
+            kernels = [k for k in kernels if k.version == version]
+
+        if not len(kernels):
+            msg = f'No kernels available for {self.body}, type={type}'
+            if version is not None:
+                msg += f', version={version}'
+            if trange is not None:
+                msg += f', time range={trange}'
+            raise ValueError(msg)
+
         if type == 'predict':
             kernels = [max(kernels)]
         dl = parfive.Downloader()
@@ -190,3 +213,13 @@ class RemoteKernelsBase:
 
         result = dl.download()
         return [SPKKernel(f) for f in result.data]
+
+    @abc.abstractmethod
+    def get_remote_kernels(self):
+        """
+        Get a list of all available remote kernels.
+
+        Returns
+        -------
+        list[RemoteKernel]
+        """
