@@ -1,5 +1,3 @@
-from packaging import version
-
 import astropy
 import astropy.units as u
 import hypothesis.strategies as st
@@ -8,6 +6,7 @@ from astropy.coordinates import get_body
 from astropy.tests.helper import assert_quantity_allclose
 from astropy.time import Time
 from hypothesis import given, settings
+from packaging import version
 
 import astrospice
 from astrospice import generate_coords
