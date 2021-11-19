@@ -19,7 +19,8 @@ def generate_coords(body, times):
     `~astropy.coordinates.SkyCoord`
     """
     body = Body(body)
-    times_et = np.atleast_1d(Time(times).et)
+    times = Time(times)
+    times_et = np.atleast_1d(times.et)
     # Spice needs a funny set of times
     abcorr = str(None)
     frame = 'J2000'
@@ -34,5 +35,7 @@ def generate_coords(body, times):
 
     return SkyCoord(x=positions[:, 0],
                     y=positions[:, 1],
-                    z=positions[:, 2], frame='icrs',
+                    z=positions[:, 2],
+                    obstime=times,
+                    frame='icrs',
                     representation_type='cartesian')

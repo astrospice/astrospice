@@ -71,3 +71,4 @@ html_theme = 'sphinx_rtd_theme'
 
 
 nitpicky = True
+default_role = 'py:obj'

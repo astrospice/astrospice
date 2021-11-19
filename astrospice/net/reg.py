@@ -96,7 +96,7 @@ class KernelRegistry:
             kernels respectively.
         version : int, optional
             If given, get only kernels with this version.
-        trange : tuple[Time], optional
+        trange : tuple[astropy.time.Time], optional
             If given, only get kernels to cover the given time range.
 
         Returns
