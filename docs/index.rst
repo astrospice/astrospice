@@ -82,6 +82,7 @@ date ranges the kernel covers::
   >>> k.coverage('SOLAR PROBE PLUS').iso
   array(['2018-08-12 08:15:14.160', '2025-08-31 09:11:39.190'], dtype='<U23')
 
+
 Solar system ephemeris
 ----------------------
 If a JPL ephemeris is set in astropy, astrospice will automatically use it. If
