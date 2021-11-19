@@ -1,3 +1,6 @@
+from packaging import version
+
+import astropy
 import astropy.units as u
 import hypothesis.strategies as st
 import pytest
@@ -22,8 +25,11 @@ def times(draw, min_time='1960-01-01', max_time='2024-01-01'):
 @settings(max_examples=100, deadline=None)
 @given(time=times())
 def test_against_horizons(time, ephem):
-    body = 'Earth'
+    if (ephem == 'de440s' and
+            (version.parse(astropy.__version__) < version.parse('4.3'))):
+        pytest.mark.skip('de440s ephemeris only available in astropy>=4.3')
 
+    body = 'Earth'
     astrospice.set_solar_system_ephem(ephem)
     horizons_coord = get_body(body, time, ephemeris=ephem)
     astrospice_coord = generate_coords(body, time)
