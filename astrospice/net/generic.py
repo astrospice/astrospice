@@ -1,10 +1,7 @@
-from dataclasses import dataclass
 
+import spiceypy
 from astropy.coordinates.solar_system import solar_system_ephemeris
 from astropy.utils.data import download_file
-import spiceypy
-
-from astrospice.config import get_cache_dir
 
 __all__ = ['set_solar_system_ephem', 'get_solar_system_ephem']
 
@@ -33,6 +30,8 @@ def set_solar_system_ephem(name):
            f'planets/{name}.bsp')
     fname = download_file(url, cache=True)
     spiceypy.furnsh(fname)
+
+    global _jpl_ephem
     _jpl_ephem = name
 
 
@@ -45,10 +44,13 @@ def get_solar_system_ephem():
     name : str
         Ephemeris name.
     """
+    global _jpl_ephem
     return _jpl_ephem
 
 
 def _setup_generic_files():
     for url in _generic_files:
         spiceypy.furnsh(download_file(url, cache=True))
+
+    global _jpl_ephem
     set_solar_system_ephem(_jpl_ephem)

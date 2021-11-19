@@ -1,10 +1,10 @@
 import astropy.units as u
 import hypothesis.strategies as st
+import pytest
 from astropy.coordinates import get_body
 from astropy.tests.helper import assert_quantity_allclose
 from astropy.time import Time
 from hypothesis import given, settings
-import pytest
 
 import astrospice
 from astrospice import generate_coords
