@@ -4,6 +4,7 @@ from astropy.coordinates import get_body
 from astropy.tests.helper import assert_quantity_allclose
 from astropy.time import Time
 from hypothesis import given, settings
+import pytest
 
 import astrospice
 from astrospice import generate_coords
@@ -17,13 +18,27 @@ def times(draw, min_time='1960-01-01', max_time='2024-01-01'):
     return Time(min_time) + draw(days) * u.day
 
 
+@pytest.mark.parametrize('ephem', ['de432s', 'de440s'])
 @settings(max_examples=100, deadline=None)
 @given(time=times())
-def test_against_horizons(time):
+def test_against_horizons(time, ephem):
     body = 'Earth'
 
-    horizons_coord = get_body(body, time,
-                              ephemeris=astrospice.solar_system_ephemeris)
+    astrospice.set_solar_system_ephem(ephem)
+    horizons_coord = get_body(body, time, ephemeris=ephem)
     astrospice_coord = generate_coords(body, time)
     assert_quantity_allclose(horizons_coord.separation_3d(astrospice_coord),
                              0*u.km, atol=50*u.m)
+
+
+def test_different_ephem():
+    # Check that setting a different ephemeris has an effect
+    coords = []
+    body = 'Earth'
+    time = Time('2020-01-01')
+    for ephem in ['de432s', 'de440s']:
+        astrospice.set_solar_system_ephem(ephem)
+        coords.append(generate_coords(body, time))
+
+    # Check that generated coordinates are different
+    assert coords[0].separation_3d(coords[1]) > 100 * u.m
