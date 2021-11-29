@@ -1,5 +1,13 @@
 Guided walkthrough
 ==================
+astrospice uses SPICE kernel files to generate coordinate data. When astrospice
+is imported a planetary ephemeris kernel for solar system bodies is
+automatically loaded, but kernels for other bodies (e.g. spacecraft) must be
+manually loaded by the user.
+
+astrospice contains a registry to find SPICE kernels - if you already have
+SPICE kernels available locally, you can skip ahead to the second section
+of this guide.
 
 Finding kernels
 ---------------
@@ -66,13 +74,16 @@ latest version of the kernel.
 
 Generating coordinates
 ----------------------
-First, lets get a kernel::
+First, lets get one of the kernels we downloaded earlier::
 
   >>> k = kernels[0]
   >>> type(k)
   <class 'astrospice.kernel.SPKKernel'>
   >>> print(k)
   SPK Kernel for Solar probe plus
+
+If you have a ``.spk`` kernel available locally, you can load it into
+astrospice using ``k = SPKKernel(file_path)``.
 
 The `~astrospice.SPKKernel` object has some handy methods to determine which
 bodies and date ranges the kernel covers::
