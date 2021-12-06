@@ -10,6 +10,7 @@ A package for finding SPICE kernels and using them with astropy coordinates.
 
 .. |Docs| image:: https://readthedocs.org/projects/astrospice/badge/?version=latest
    :target: https://astrospice.readthedocs.io/en/latest/?badge=latest
+
 License
 -------
 
