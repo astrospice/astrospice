@@ -19,6 +19,12 @@ __all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase', 'registry']
 
 
 class KernelRegistry:
+    """
+    A registry of remote SPICE kernels.
+
+    Kernels are stored in the ``_kernels`` property, which is a dict with
+    structure _kernels[body][type] -> RemoteKernelsBase
+    """
     def __init__(self):
         self._kernels = defaultdict(dict)
 
@@ -106,6 +112,10 @@ class KernelRegistry:
             List of local filepaths.
         """
         self.check_body(body)
+        types = list(self._kernels[body].keys())
+        if type not in types:
+            raise ValueError(f'{type} is not one of the known kernel types '
+                             f'for {body}: {types}')
         return self._kernels[body][type].get_kernels(
             type, version=version, trange=trange)
 
@@ -168,16 +178,13 @@ class RemoteKernelsBase(abc.ABC):
         k = sorted(kernels)[-1]
         return k.fetch()
 
-    def get_kernels(self, type, *, version=None, trange=None):
+    def get_kernels(self, *, version=None, trange=None):
         """
         Get a set of kernels. Any kernels not present locally will be
         downloaded.
 
         Parameters
         ----------
-        type : str
-            ``'recon'`` or ``'pred'`` to downloaded reconstructed or predicted
-            kernels respectively.
         version : int, optional
             If given, get only this version of the kernel.
         trange : tuple[astropy.time.Time], optional
@@ -206,7 +213,8 @@ class RemoteKernelsBase(abc.ABC):
                 msg += f', time range={trange}'
             raise ValueError(msg)
 
-        if type == 'predict':
+        if self.type == 'predict':
+            # Only get the most recent version
             kernels = [max(kernels)]
         dl = parfive.Downloader()
         for k in kernels:
