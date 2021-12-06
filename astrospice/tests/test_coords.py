@@ -26,7 +26,7 @@ def times(draw, min_time='1960-01-01', max_time='2024-01-01'):
 def test_against_horizons(time, ephem):
     if (ephem == 'de440s' and
             (version.parse(astropy.__version__) < version.parse('4.3'))):
-        pytest.mark.skip('de440s ephemeris only available in astropy>=4.3')
+        pytest.skip('de440s ephemeris only available in astropy>=4.3')
 
     body = 'Earth'
     astrospice.set_solar_system_ephem(ephem)

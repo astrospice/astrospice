@@ -89,7 +89,7 @@ The `~astrospice.SPKKernel` object has some handy methods to determine which
 bodies and date ranges the kernel covers::
 
   >>> k.bodies
-  [Body(SOLAR PROBE PLUS)]
+  [Body("SOLAR PROBE PLUS")]
   >>> k.coverage('SOLAR PROBE PLUS').iso
   array(['2018-08-12 08:15:14.160', '2025-08-31 09:11:39.190'], dtype='<U23')
 
