@@ -89,7 +89,7 @@ class KernelRegistry:
         self.check_body(body)
         return self._kernels[body][type].get_latest_kernel()
 
-    def get_kernels(self, body, type, *, version=None, trange=None):
+    def get_kernels(self, body, type, *, version=None):
         """
         Get a set of kernels. Any kernels not present locally will be
         downloaded.
@@ -103,8 +103,6 @@ class KernelRegistry:
             kernels respectively.
         version : int, optional
             If given, get only kernels with this version.
-        trange : tuple[astropy.time.Time], optional
-            If given, only get kernels to cover the given time range.
 
         Returns
         -------
@@ -116,8 +114,7 @@ class KernelRegistry:
         if type not in types:
             raise ValueError(f'{type} is not one of the known kernel types '
                              f'for {body}: {types}')
-        return self._kernels[body][type].get_kernels(
-            type, version=version, trange=trange)
+        return self._kernels[body][type].get_kernels(version=version)
 
 
 registry = KernelRegistry()
@@ -178,7 +175,7 @@ class RemoteKernelsBase(abc.ABC):
         k = sorted(kernels)[-1]
         return k.fetch()
 
-    def get_kernels(self, *, version=None, trange=None):
+    def get_kernels(self, *, version=None):
         """
         Get a set of kernels. Any kernels not present locally will be
         downloaded.
@@ -205,12 +202,10 @@ class RemoteKernelsBase(abc.ABC):
         if version is not None:
             kernels = [k for k in kernels if k.version == version]
 
-        if not len(kernels):
-            msg = f'No kernels available for {self.body}, type={type}'
+        if len(kernels) == 0:
+            msg = f'No kernels available for {self.body}, type={self.type}'
             if version is not None:
                 msg += f', version={version}'
-            if trange is not None:
-                msg += f', time range={trange}'
             raise ValueError(msg)
 
         if self.type == 'predict':

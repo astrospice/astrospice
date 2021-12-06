@@ -13,13 +13,24 @@ def test_search(body):
     assert isinstance(kernels, Table)
 
 
-def test_invalid_body():
+def test_get_kernels():
+    k = registry.get_kernels('psp', 'predict', version=35)
+    assert isinstance(k, list)
+    assert len(k) == 1
+    assert isinstance(k[0], SPKKernel)
+
+
+def test_errors():
     with pytest.raises(ValueError, match='not a body not in list'):
         registry.get_kernels('not a body', 'recon')
 
     msg = 'blah is not one of the known kernel types for psp'
     with pytest.raises(ValueError, match=msg):
         registry.get_kernels('psp', 'blah')
+
+    msg = 'No kernels available for psp, type=predict, version=1'
+    with pytest.raises(ValueError, match=msg):
+        registry.get_kernels('psp', 'predict', version=1)
 
 
 def test_get_latest():
