@@ -21,7 +21,7 @@ class Body:
             raise ValueError('body must be an int or str')
 
     def __repr__(self):
-        return f'Body({self.name})'
+        return f'Body("{self.name}")'
 
     def __eq__(self, other):
         return isinstance(other, Body) and other.id == self.id

@@ -4,7 +4,7 @@ A package for finding SPICE kernels and using them with astropy coordinates.
 
 .. |Tests| image:: https://github.com/dstansby/astrospice/actions/workflows/python-test.yml/badge.svg?branch=main
    :target: https://github.com/dstansby/astrospice/actions/workflows/python-test.yml
- 
+
 .. |Coverage| image:: https://codecov.io/gh/dstansby/astrospice/branch/main/graph/badge.svg?token=W3K1OANI9N
    :target: https://codecov.io/gh/dstansby/astrospice
 
