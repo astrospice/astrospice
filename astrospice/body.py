@@ -1,4 +1,5 @@
 import spiceypy
+from spiceypy.utils.exceptions import SpiceyError
 
 __all__ = ['Body']
 
@@ -36,8 +37,8 @@ class Body:
         self._id = id
         try:
             self._name = spiceypy.bodc2n(id)
-        except spiceytypes.SpiceyError:
-            raise ValueError(f'id "{id}" not known by SPICE')
+        except SpiceyError as e:
+            raise ValueError(f'id "{id}" not known by SPICE') from e
 
     @property
     def name(self):
@@ -49,5 +50,5 @@ class Body:
         self._name = name
         try:
             self._id = spiceypy.bodn2c(name)
-        except spiceytypes.SpiceyError:
-            raise ValueError(f'Body name "{name}" not known by SPICE')
+        except SpiceyError as e:
+            raise ValueError(f'Body name "{name}" not known by SPICE') from e
