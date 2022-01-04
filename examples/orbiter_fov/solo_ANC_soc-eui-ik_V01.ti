@@ -1,0 +1,263 @@
+KPL/IK
+
+EUI Instrument Kernel
+===========================================================================
+
+   This instrument kernel (I-kernel) briefly describes and contains 
+   orientative information of the Field-of-View (FoV) and/or 
+   Field-of-Regard (FoR) of and the line of sight (boresight) of the 
+   Extreme Ultraviolet Imager (EUI) sensors. 
+
+   DISCLAIMER: This I-kernel should not be used as a reference for the 
+   instrument nor for data analysis for the FoVs will not be updated to 
+   reflect best known / calibrated FoVs, nor variation according to mode.
+
+
+Version and Date
+-----------------------------------------------------------------------------
+
+   Version 0.1 -- March 28, 2018 -- Marc Costa Sitja, ESAC/ESA
+
+      Incorporated feedback from SOC. Moved FOV frame definition from
+      SOLO_EUI_*_OPT frame to SOLO_EUI_*_ILS frame.
+
+   Version 0.0 -- May 16, 2017 -- Marc Costa Sitja, ESAC/ESA
+
+      Preliminary Version.
+
+
+References
+-----------------------------------------------------------------------------
+
+      1.  ``Kernel Pool Required Reading''.
+
+      2.  ``Frames Required Reading''.
+
+      3.  ``C-Kernel Required Reading".
+
+      4.   Solar Orbiter Spacecraft Frames Definition Kernel.
+
+      5.   ``Solar Orbiter EUI User Manual'', UM-MSSL-SOEUI-11001,
+           P. Smith, Issue 15, Revision 0, 24th March 2017.
+
+
+Contact Information
+-----------------------------------------------------------------------------
+
+   If you have any questions regarding this file contact SPICE support at
+   ESAC:
+
+           Marc Costa Sitja
+           (+34) 91-8131-457
+           mcosta@sciops.esa.int, esa_spice@sciops.esa.int
+
+   or the Solar Orbiter Science Operations Center at ESAC:
+
+           sol_soc@esa.int
+
+
+Implementation Notes
+-----------------------------------------------------------------------------
+
+  This file is used by the SPICE system as follows: programs that make use
+  of this frame kernel must "load" the kernel normally during program
+  initialization. Loading the kernel associates the data items with
+  their names in a data structure called the "kernel pool".  The SPICELIB
+  routine FURNSH loads a kernel into the pool as shown below:
+
+    FORTRAN: (SPICELIB)
+
+      CALL FURNSH ( frame_kernel_name )
+
+    C: (CSPICE)
+
+      furnsh_c ( frame_kernel_name );
+
+    IDL: (ICY)
+
+      cspice_furnsh, frame_kernel_name
+
+    MATLAB: (MICE)
+      
+         cspice_furnsh ( 'frame_kernel_name' )
+
+    PYTHON: (SPICEYPY)*
+
+         furnsh( frame_kernel_name )
+
+  In order for a program or routine to extract data from the pool, the
+  SPICELIB routines GDPOOL, GIPOOL, and GCPOOL are used.  See [2] for
+  more details.
+
+  This file was created and may be updated with a text editor or word
+  processor.
+
+  * SPICEPY is a non-official, community developed Python wrapper for the
+    NAIF SPICE toolkit. Its development is managed on Github.
+    It is available at: https://github.com/AndrewAnnex/SpiceyPy
+
+
+Naming Conventions
+-----------------------------------------------------------------------------
+
+    Data items are specified using ''keyword=value'' assignments [1].
+    All keywords referencing values in this I-kernel start with the
+    characters `INS' followed by the NAIF SOLO instrument ID code,
+    constructed using the spacecraft ID number (-144) followed by the NAIF
+    three digit ID number for one of the EUI data item.
+
+    These IDs are as follows
+
+        Instrument name          ID
+        --------------------   -------
+        SOLO_EUI               -144200
+        SOLO_EUI_FSI           -144210
+        SOLO_EUI_HRI_LYA       -144220
+        SOLO_EUI_HRI_EUV       -144230
+
+
+    The remainder of the name is an underscore character followed by the
+    unique name of the data item.  For example, the EUI HRI LYA boresight 
+    direction in the SOLO_EUI_HRI_LYA_OPT frame (see [2]) is specified by:
+
+        INS-144220_BORESIGHT
+
+    The upper bound on the length of the name of any data item identifier
+    is 32 characters.
+
+    If the same item is included in more than one file, or if the same item
+    appears more than once within a single file, the latest value supersedes
+    any earlier values.
+
+
+Overview
+-----------------------------------------------------------------------------
+
+   From [5]:
+
+   The EUI instrument suite is composed of two high resolution imagers (HRI), 
+   one at Lyman-alpha and one at 174 Ams, respectively named ''HRILy-alpha'' 
+   and ''HRIEUV'', and one dual band full-sun imager (FSI) working 
+   alternatively at the 174 and 304 Ams EUV passbands, named ''FSI174/304''.
+
+   With its three channels, EUI will fulfil all the requirements for EUV 
+   imaging. The science goals emphasise and fully exploit the unique mission 
+   characteristics of Solar Orbiter, namely: close-up view point, 
+   out-of-ecliptic view point, co-rotation.
+
+   The EUI uses three telescopes, working in near normal incidence to image 
+   the Sun. The extreme ultra-violet (EUV) reflectivity of the optical 
+   surfaces obtained with specific EUV multi-layered coating provides the 
+   spectral selection, complemented by filters rejecting the visible and 
+   infra-red (IR) radiation. The ultra-violet (UV) photons reach the detectors 
+   (back-thinned APS of 10 µm 2048 × 2048 for the HRI channels and 10 mircom 
+   3072 × 3072 for the FSI channel) where they are converted into an 
+   electrical signal in the Front-End Electronics (FEE), before being
+   compressed and stored in the CEB. For each detector pixel, the resulting 
+   signal is proportional to the solar flux corresponding to the small viewing 
+   angle of the pixel in the given passband.
+
+
+Mounting Alignment
+-----------------------------------------------------------------------------
+
+   Refer to the latest version of the Solar Orbiter Frames Definition Kernel
+   (FK) [4] for the EUI reference frame definitions and mounting
+   alignment information.
+
+
+EUI Apparent Field-of-View Layout
+-----------------------------------------------------------------------------
+
+   For EUI FSI, the front element of the telescope is an entrance filter 
+   with a FOV of 228 arcmin. For EUI HRI LYA and EUV, the front element of 
+   the telescope is an entrance filter with a FOV of 16.6 arcmin.
+
+   This section provides a diagram illustrating the EUI FSI, EUI HRI LYA and 
+   EUV apparent FOV layout in the corresponding reference frames.
+
+
+                                  ^ +Yeui
+                                  | 
+                                  |
+       ---              +---------|---------+
+        ^               |         |         |
+        | 228 arcmin    |         |         |               
+        |    (fsi)      |         |         |               
+        |               |         |         |               
+        |               |         x-------------> +Zeui     
+        |               |       +Xeui       |    
+        |               |                   |
+        | 16.6 arcmin   |                   |
+        V  (hri lya     |                   |
+       ---  and euv)    +-------------------+
+
+                        |  228 arcmin (fsi) |      Boresight (+X axis)
+                        |<----------------->|       is into the page
+                        |  16.6 arcmin (hri |
+                             lya and euv)
+
+
+FOV Definition
+---------------------------------------------------------------------------
+
+   This section contains definitions for the EUI apparent FOVs.
+   These definitions are provided in the format required by the SPICE
+   TOOLKIT function GETFOV. 
+
+   Please note that the FOV reference and cross angles are defined with half
+   angle values. The FOV definitions correspond to the NAIF Body Names:
+   SOLO_EUI_FSI, SOLO_EUI_HRI_LYA and SOLO_EUI_HRI_EUV.
+
+      \begindata
+
+         INS-144210_NAME                      = 'SOLO_EUI_FSI'
+         INS-144210_BORESIGHT                 = ( -1.000   0.000  0.000 )
+         INS-144210_FOV_FRAME                 = 'SOLO_EUI_FSI_ILS'
+         INS-144210_FOV_SHAPE                 = 'RECTANGLE'
+         INS-144210_FOV_CLASS_SPEC            = 'ANGLES'
+         INS-144210_FOV_REF_VECTOR            = (  0.000  0.000  1.000 )
+         INS-144210_FOV_REF_ANGLE             = (   1.900000 )
+         INS-144210_FOV_CROSS_ANGLE           = (   1.900000 )
+         INS-144210_FOV_ANGLE_UNITS           = 'DEGREES'
+
+
+         INS-144220_NAME                      = 'SOLO_EUI_HRI_LYA'
+         INS-144220_BORESIGHT                 = ( -1.000   0.000  0.000 )
+         INS-144220_FOV_FRAME                 = 'SOLO_EUI_HRI_LYA_ILS'
+         INS-144220_FOV_SHAPE                 = 'RECTANGLE'
+         INS-144220_FOV_CLASS_SPEC            = 'ANGLES'
+         INS-144220_FOV_REF_VECTOR            = (  0.000  0.000  1.000 )
+         INS-144220_FOV_REF_ANGLE             = (   0.138333 )
+         INS-144220_FOV_CROSS_ANGLE           = (   0.138333 )
+         INS-144220_FOV_ANGLE_UNITS           = 'DEGREES'
+
+
+         INS-144230_NAME                      = 'SOLO_EUI_HRI_EUV'
+         INS-144230_BORESIGHT                 = ( -1.000  0.000  0.000 )
+         INS-144230_FOV_FRAME                 = 'SOLO_EUI_HRI_EUV_ILS'
+         INS-144230_FOV_SHAPE                 = 'RECTANGLE'
+         INS-144230_FOV_CLASS_SPEC            = 'ANGLES'
+         INS-144230_FOV_REF_VECTOR            = (  0.000  0.000  1.000 )
+         INS-144230_FOV_REF_ANGLE             = (   0.138333 )
+         INS-144230_FOV_CROSS_ANGLE           = (   0.138333 )
+         INS-144230_FOV_ANGLE_UNITS           = 'DEGREES'
+
+     \begintext
+
+
+Platform ID
+-----------------------------------------------------------------------------
+
+   This number is the NAIF instrument ID of the platform on which
+   the channels are mounted. For all channels this platform is
+   the spacecraft.
+
+    \begindata
+
+      INS-144500_PLATFORM_ID = ( -144000 )
+
+    \begintext
+
+
+End of IK file.
