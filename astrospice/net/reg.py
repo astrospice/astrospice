@@ -51,7 +51,7 @@ class KernelRegistry:
 
     def get_available_kernels(self, body):
         """
-        Get all the available kernels.
+        Get a list of all the available kernels.
 
         Parameters
         ----------
@@ -91,7 +91,7 @@ class KernelRegistry:
 
     def get_kernels(self, body, type, *, version=None):
         """
-        Get a set of kernels. Any kernels not present locally will be
+        Download a set of kernels. Any kernels not present locally will be
         downloaded.
 
         Parameters
