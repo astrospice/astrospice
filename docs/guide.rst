@@ -22,7 +22,7 @@ registry::
 The available bodies can be seen by printing the registry::
 
   >>> print(astrospice.registry)
-  Known kernels: ['psp', 'solar orbiter', 'stereo-a', 'stereo-b']
+  Known kernels: ['cassini', 'psp', 'solar orbiter', 'stereo-a', 'stereo-b']
 
 Available kernels for individual bodies can be queried using
 :meth:`~astrospice.net.KernelRegistry.get_available_kernels`::
