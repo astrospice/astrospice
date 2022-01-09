@@ -26,9 +26,9 @@ jobs:
             os: ubuntu-20.04
             python-version: '3.9'
 
-          - name: devdeps
+          - name: linux py310-devdeps
             os: ubuntu-20.04
-            python-version: '3.9'
+            python-version: '3.10'
             pip-extras: git+https://github.com/astropy/astropy git+https://github.com/AndrewAnnex/SpiceyPy
 
     steps:
