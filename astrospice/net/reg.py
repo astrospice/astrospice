@@ -115,6 +115,29 @@ class KernelRegistry:
             raise ValueError(f'{type} is not one of the known kernel types '
                              f'for {body}: {types}')
         return self._kernels[body][type].get_kernels(version=version)
+    
+    def set_kernels(self, kernels):
+        """Allows the user to set the kernels manually. This could just be done with spiceypy,
+        but would be nice to have everything in one place.
+        
+
+        Parameters
+        ----------
+        kernels : list
+            List of kernel paths
+
+        Returns
+        -------
+        [type]
+            [description]
+        """
+        
+        # needs to go through kernels and made them KernelBase objects
+        # if .spk then make them SPKKernel objects
+        
+        #for kernel in kernels:
+            #if .spk
+        raise NotImplementedError
 
 
 registry = KernelRegistry()
@@ -161,12 +184,33 @@ class RemoteKernel:
             dl.download()
 
         return Kernel(local_path)
+    
+@dataclass
+class MetaKernel:
+    url: str
+    time: astropy.time.Time
+    version: int
+    
+    def __str__(self):
+        return '\n'.join([f'URL: {self.url}',
+                          f'Start time: {self.start_time.iso}',
+                          f'End time: {self.end_time.iso}',
+                          f'Version: {self.version}'])
 
+    def __lt__(self, other):
+        return self.version < other.version
 
+    @property
+    def fname(self):
+        return self.url.split('/')[-1]
+
+    def fetch():
+        raise NotImplementedError
+    
 class RemoteKernelsBase(abc.ABC):
     def __init_subclass__(cls):
         registry._kernels[cls.body][cls.type] = cls()
-        assert cls.type in ['predict', 'recon']
+        assert cls.type in ['predict', 'recon', 'meta']
 
     def get_latest_kernel(self):
         """
