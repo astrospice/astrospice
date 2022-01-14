@@ -3,7 +3,8 @@ from urllib.request import urlopen
 from astropy.time import Time
 from bs4 import BeautifulSoup
 
-from astrospice.net.reg import RemoteKernel, RemoteKernelsBase, MetaKernel
+from astrospice.net.reg import RemoteKernel, RemoteKernelsBase, MetaKernel, RemoteMetaKernel
+from astrospice.config import get_cache_dir
 
 __all__ = ['SolarOrbiterPredict']
 
@@ -72,28 +73,50 @@ class SolarOrbiterMetakernel(RemoteKernelsBase):
     type = 'meta'
     
     def get_remote_kernels(self):
-        #get the url of the remote meta kernel and download it
+        pass
+    
+    def get_latest_metakernel(self, metatype = 'predict'):
+        #get the url of the remote meta kernel
         """
-        Returns
-        -------
-        list[RemoteKernel]
+        Parameters
+        ------
+        metatype: str
+            either 'predict' or 'flown'
         """
         base_url = 'http://spiftp.esac.esa.int/data/SPICE/SOLAR-ORBITER/kernels/mk'
         page = urlopen(base_url)
         soup = BeautifulSoup(page, 'html.parser')
+        types = ['flown', 'predict']
+        if metatype not in types:
+            raise ValueError(f'{metatype} is not one of the known metakernel types '
+                             f'either: {types}')
 
+
+        type_to_fname_section = {'flown': 'soc-flown-mk', 'predict':'soc-pred-mk'}
+        #time before orbiter launched so will be overwritten
+        most_recent_time = Time.strptime('20190101', '%Y%m%d')
         kernel_urls = []
         for link in soup.find_all('a'):
             href = link.get('href')
             if href is not None and href.endswith('.tm'):
                 fname = href.split('/')[-1]
-                matches = self.matches(fname)
-                if matches:
-                    kernel_urls.append(
-                        MetaKernel(f'{base_url}/{fname}', *matches[1:]))
+                if fname.split('_')[2] == type_to_fname_section[metatype]:
+                
+                    matches = self.matches(fname)
+                    if matches[1] > most_recent_time:
+                        most_recent_time = matches[1]
+                        most_recent_kernel_fname = fname
+                        most_recent_kernel_matches = matches
+        latest_metakernel = RemoteMetaKernel(f'{base_url}/{most_recent_kernel_fname}', *most_recent_kernel_matches[1:])
+        latest_metakernel.fetch()
+        latest_metakernel.edit_local_metakernel()
+        #then return a local metakernel object
+        return latest_metakernel
 
-        return kernel_urls
-
+    
+        
+        
+        
     @staticmethod
     def matches(fname):
         """
@@ -123,6 +146,7 @@ class SolarOrbiterMetakernel(RemoteKernelsBase):
         
         #change the kernel attribute in the metakernel file
         
+        
         #cycle through the listed files in the metakernel and download them
         
         #these have the same https address as the file system for my local copy
@@ -132,4 +156,4 @@ class SolarOrbiterMetakernel(RemoteKernelsBase):
         
         #if .spk then load as one of those objects
         print('Downloading metakernel file')
-    
+        

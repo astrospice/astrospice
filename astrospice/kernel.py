@@ -3,7 +3,7 @@ from pathlib import Path
 
 import spiceypy
 from astropy.time import Time
-
+from astrospice.config import get_cache_dir
 from astrospice.body import Body
 
 __all__ = ['KernelBase', 'Kernel', 'SPKKernel', 'MetaKernel']
