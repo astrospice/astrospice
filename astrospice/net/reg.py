@@ -193,12 +193,15 @@ class MetaKernel:
     
     def __str__(self):
         return '\n'.join([f'URL: {self.url}',
-                          f'Start time: {self.start_time.iso}',
-                          f'End time: {self.end_time.iso}',
+                          f'Date: {self.time.iso}',
                           f'Version: {self.version}'])
 
+    # this stands for less than, and is how the kernels are sorted
+    # this must work for normal kernel versions, but metakernels are sorted
+    # by time
     def __lt__(self, other):
-        return self.version < other.version
+        return self.time < other.time
+        # return self.version < other.version
 
     @property
     def fname(self):
@@ -258,9 +261,12 @@ class RemoteKernelsBase(abc.ABC):
                 msg += f', version={version}'
             raise ValueError(msg)
 
-        if self.type == 'predict':
+        if self.type == 'predict' or self.type == 'meta':
             # Only get the most recent version
+            # should this not be get_latest_kernel()
             kernels = [max(kernels)]
+            # BUG need to load as a metakernel, otherwise it expects a start_time
+            print(kernels)
         dl = parfive.Downloader()
         for k in kernels:
             dl.enqueue_file(k.url, get_cache_dir(), k.fname)
