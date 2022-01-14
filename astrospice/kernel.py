@@ -2,7 +2,7 @@ from pathlib import Path
 
 import spiceypy
 from astropy.time import Time
-
+from astrospice.config import get_cache_dir
 from astrospice.body import Body
 
 __all__ = ['KernelBase', 'SPKKernel']
@@ -72,3 +72,29 @@ class SPKKernel(KernelBase):
         body = Body(body)
         coverage = [t for t in spiceypy.spkcov(self._fname_str, body.id)]
         return Time(coverage, format='et').utc
+
+class MetaKernel:
+    """
+    A class for a single Meta (.tm) kernel.
+    It just doesn't furnish the metakernel before the 
+    specified files are downloaded
+    """
+    def __init__(self, fname):
+        self._fname = fname
+        
+    def furnsh(self):
+        spiceypy.furnsh(self._fname_str)
+
+    @property
+    def fname(self):
+        """Path to kernel file."""
+        return Path(self._fname)
+
+    @property
+    def _fname_str(self):
+        return str(self.fname)
+    
+    def __str__(self):
+        return f'Meta Kernel {self.fname}'
+    
+    

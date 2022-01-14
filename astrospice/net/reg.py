@@ -13,7 +13,7 @@ from astropy.table import Table, vstack
 from astropy.time import Time
 
 from astrospice.config import get_cache_dir
-from astrospice.kernel import KernelBase, SPKKernel
+from astrospice.kernel import KernelBase, SPKKernel, MetaKernel
 
 __all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase', 'registry']
 
@@ -178,9 +178,53 @@ class RemoteKernel:
             dl.download()
 
         return SPKKernel(local_path)
-    
+
+
+# the metakernel files do not all follow the start-end time format
 @dataclass
-class MetaKernel:
+class GenericRemoteKernel:
+    fname: str
+
+
+    def __lt__(self, other):
+        return self.version < other.version
+
+    @property
+    def url(self):
+        BASE_URL = 'http://spiftp.esac.esa.int/data/SPICE/SOLAR-ORBITER/kernels/'
+        return BASE_URL + self.fname
+
+    def fetch(self):
+        """
+        Get the kernel. If not present locally, will be downloaded.
+
+        Returns
+        -------
+        astrospice.SPKKernel
+        """
+        split_fname = self.fname.split('/')
+        sub_folder = split_fname[1]
+        just_filename = split_fname[-1]
+        folder = get_cache_dir() / sub_folder
+        print(get_cache_dir())
+        print(f'folder: {folder}, fname: {just_filename}')
+        
+        #make the folder if it does not already exist
+        
+        if not folder.exists():
+            folder.mkdir()
+            
+        local_path =  folder / just_filename
+        if not local_path.exists():
+            dl = parfive.Downloader()
+            # want to save in the same folder structure as the metakernel expects
+            dl.enqueue_file(self.url, folder, just_filename)
+            dl.download()
+
+        return KernelBase(local_path)
+
+@dataclass
+class RemoteMetaKernel:
     url: str
     time: astropy.time.Time
     version: int
@@ -200,9 +244,79 @@ class MetaKernel:
     @property
     def fname(self):
         return self.url.split('/')[-1]
+    
+    def edit_local_metakernel(self):
+        # need to change the PATH_VALUES so the metakernel can be furnished
+        with open(get_cache_dir() / self.fname, 'r') as file:
+            # read a list of lines into data
+            data = file.readlines()
 
-    def fetch():
-        raise NotImplementedError
+        #find the right line and change it
+        for i, line in enumerate(data):
+            line_split = line.split()
+            if len(line_split) > 1 and line_split[0] == 'PATH_VALUES':
+                print(line_split)
+                if line_split[-2] == "'..'":
+                    data[i] = data[i].replace('..', str(get_cache_dir()))
+                    print(data[i])
+                else:
+                    print('file already modified')
+                    return None
+        # and write everything back
+        with open(get_cache_dir() / self.fname, 'w') as file:
+            file.writelines( data )
+        
+    def fetch_associated_files(self):
+        """Get the kernels specified in the metakernel. If not present
+        locally, will be downloaded.
+        """
+        # read the metakernel file
+        kernel_urls = []
+        with open(get_cache_dir() / self.fname, "r") as file:
+            look_for_kernels = False
+            for  line in file:
+                #split by whitespace
+                line_split = line.split()
+                # print(line_split)
+                
+                if look_for_kernels == True and len(line_split) > 0:
+                    # find the filename for the kernel
+                    fname = line_split[0][9:-1]
+                    if fname != '':
+                        # print(fname)
+                        # load each of them into their own kernel objects
+                        kernel_urls.append(GenericRemoteKernel(fname)) # not all files have start and end time 
+                
+                if len(line_split) > 1 and line_split[0] == 'KERNELS_TO_LOAD':
+                    look_for_kernels = True
+                
+                # now find the ) bracket by itself, this is the end of kernels to load
+                if len(line_split) >= 1 and line_split[0] == ')':
+                    look_for_kernels = False
+                    break
+            
+        for kernel in kernel_urls:
+            # download the file
+            kernel.fetch()
+            
+        return MetaKernel(get_cache_dir() / self.fname)
+        
+    
+    def fetch(self):
+        """
+        Get the meta kernel itself. If not present locally, will be downloaded.
+
+        Returns
+        -------
+        astrospice.SPKKernel
+        """
+        local_path = get_cache_dir() / self.fname
+        if not local_path.exists():
+            dl = parfive.Downloader()
+            dl.enqueue_file(self.url, get_cache_dir(), self.fname)
+            dl.download()
+
+        return MetaKernel(local_path)
     
 class RemoteKernelsBase(abc.ABC):
     def __init_subclass__(cls):
@@ -257,15 +371,15 @@ class RemoteKernelsBase(abc.ABC):
 
         if self.type == 'predict' or self.type == 'meta':
             # Only get the most recent version
-            # should this not be get_latest_kernel()
+            # should this not be get_latest_kernel()? or at least sorted(kernels)[-1]
             kernels = [max(kernels)]
-            # BUG need to load as a metakernel, otherwise it expects a start_time
             print(kernels)
         dl = parfive.Downloader()
         for k in kernels:
             dl.enqueue_file(k.url, get_cache_dir(), k.fname)
 
         result = dl.download()
+        # BUG need to load as a metakernel, otherwise it expects a start_time
         return [SPKKernel(f) for f in result.data]
 
     @abc.abstractmethod
