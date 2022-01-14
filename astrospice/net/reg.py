@@ -99,7 +99,7 @@ class KernelRegistry:
         body : str
             Spacecraft body.
         type : str
-            ``'recon'`` or ``'pred'`` to downloaded reconstructed or predicted
+            ``'recon'`` or ``'predict'`` to downloaded reconstructed or predicted
             kernels respectively.
         version : int, optional
             If given, get only kernels with this version.
