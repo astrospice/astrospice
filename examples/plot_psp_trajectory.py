@@ -40,7 +40,7 @@ print(coords[0:4])
 ###############################################################################
 # Note that the coordinates are generated in the ICRS coordinate system. To
 # change this to a more useful heliocentric coordinate system we can use
-# sunpy's built in Heliographic Carrington coordinate frame.
+# sunpy's built in Heliocentric Intertial coordinate frame.
 new_frame = HeliocentricInertial()
 coords = coords.transform_to(new_frame)
 print(coords[0:4])
