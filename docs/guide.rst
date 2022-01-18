@@ -74,7 +74,7 @@ First, lets get one of the kernels we downloaded earlier::
   SPK Kernel for Solar probe plus
 
 If you have a ``.spk`` kernel available locally, you can load it into
-astrospice using ``k = SPKKernel(file_path)``.
+astrospice using ``k = Kernel(file_path)``.
 
 The `~astrospice.SPKKernel` object has some handy methods to determine which
 bodies and date ranges the kernel covers::
