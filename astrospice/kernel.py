@@ -172,10 +172,6 @@ class MetaKernel(KernelBase):
         
         return kernels
     
-    def get_kernel_fname(self, fname):
-        split_fname = fname.split('/')
-        return split_fname[1], split_fname[2]
-    
     def load_kernels(self):
         """
         Loads the kernels specified by the metakernel
