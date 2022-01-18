@@ -13,7 +13,7 @@ from astropy.table import Table, vstack
 from astropy.time import Time
 
 from astrospice.config import get_cache_dir
-from astrospice.kernel import SPKKernel
+from astrospice.kernel import Kernel
 
 __all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase', 'registry']
 
@@ -84,7 +84,7 @@ class KernelRegistry:
         """
         Returns
         -------
-        astrospice.SPKKernel
+        astrospice.KernelBase
         """
         self.check_body(body)
         return self._kernels[body][type].get_latest_kernel()
@@ -122,6 +122,9 @@ registry = KernelRegistry()
 
 @dataclass
 class RemoteKernel:
+    """
+    A single kernel available on a remote server.
+    """
     url: str
     start_time: astropy.time.Time
     end_time: astropy.time.Time
@@ -138,15 +141,18 @@ class RemoteKernel:
 
     @property
     def fname(self):
+        """Kernel filename."""
         return self.url.split('/')[-1]
 
     def fetch(self):
         """
         Get the kernel. If not present locally, will be downloaded.
 
+        This also implicitly furnishes the kernel with SPICE.
+
         Returns
         -------
-        astrospice.SPKKernel
+        astrospice.KernelBase
         """
         local_path = get_cache_dir() / self.fname
         if not local_path.exists():
@@ -154,7 +160,7 @@ class RemoteKernel:
             dl.enqueue_file(self.url, get_cache_dir(), self.fname)
             dl.download()
 
-        return SPKKernel(local_path)
+        return Kernel(local_path)
 
 
 class RemoteKernelsBase(abc.ABC):
@@ -169,7 +175,7 @@ class RemoteKernelsBase(abc.ABC):
 
         Returns
         -------
-        astrospice.SPKKernel
+        astrospice.KernelBase
         """
         kernels = self.get_remote_kernels()
         k = sorted(kernels)[-1]
@@ -189,7 +195,7 @@ class RemoteKernelsBase(abc.ABC):
 
         Returns
         -------
-        list[astrospice.SPKKernel]
+        list[astrospice.KernelBase]
             List of kernels.
 
         Raises
@@ -216,7 +222,7 @@ class RemoteKernelsBase(abc.ABC):
             dl.enqueue_file(k.url, get_cache_dir(), k.fname)
 
         result = dl.download()
-        return [SPKKernel(f) for f in result.data]
+        return [Kernel(f) for f in result.data]
 
     @abc.abstractmethod
     def get_remote_kernels(self):

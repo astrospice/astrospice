@@ -5,7 +5,11 @@ from astropy.time import Time
 
 from astrospice.body import Body
 
-__all__ = ['KernelBase', 'SPKKernel']
+__all__ = ['KernelBase', 'Kernel', 'SPKKernel']
+
+
+# Mapping from filename extension to Kernel class
+_REGISTRY = {}
 
 
 class KernelBase:
@@ -21,6 +25,9 @@ class KernelBase:
         self._fname = fname
         spiceypy.furnsh(self._fname_str)
 
+    def __init_subclass__(cls):
+        _REGISTRY[cls._file_extension] = cls
+
     @property
     def fname(self):
         """Path to kernel file."""
@@ -31,6 +38,27 @@ class KernelBase:
         return str(self.fname)
 
 
+def Kernel(fname):
+    """
+    Load a SPICE kernel.
+
+    Parameters
+    ----------
+    fname : str, pathlib.Path
+        Path to the kernel file.
+
+    Returns
+    -------
+    kernel : KernelBase
+    """
+    extension = Path(fname).suffix
+    if extension in _REGISTRY:
+        return _REGISTRY[extension](fname)
+    else:
+        raise ValueError(f'Filename extension "{extension}" not in '
+                         f'known extensions: {list(_REGISTRY.keys())}')
+
+
 class SPKKernel(KernelBase):
     """
     A class for a single .spk kernel.
@@ -39,6 +67,8 @@ class SPKKernel(KernelBase):
     ----------
     https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html
     """
+    _file_extension = '.bsp'
+
     def __init__(self, fname):
         super().__init__(fname)
         # Run bodies() to validate the spice kernel
