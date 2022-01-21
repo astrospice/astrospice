@@ -184,12 +184,7 @@ class MetaKernel(KernelBase):
                 
     def kernels_exist(self):
         """
-        Checks if the kernels in the metakernel exist
-
-        Returns
-        -------
-        Bool
-            True if all kernels exist, False if not
+        Return `True` if all kernels in the metakernel exist.
         """
         for kernel in self.kernels:
             kernel_path = self.fname.parent / Path(kernel)
