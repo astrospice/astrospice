@@ -23,6 +23,7 @@ class KernelBase:
     """
     def __init__(self, fname):
         self._fname = fname
+        print(self._fname_str)
         spiceypy.furnsh(self._fname_str)
 
     def __init_subclass__(cls):
@@ -114,8 +115,10 @@ class MetaKernel(KernelBase):
     _file_extension = '.tm'
     
     def __init__(self, fname):
+        """
+        Loading the metakernel will load all the kernels specified, if they exist.
+        """
         self._fname = fname
-        self.change_path_value()
         if self.kernels_exist:
             self.load_kernels()
         else:
@@ -123,7 +126,13 @@ class MetaKernel(KernelBase):
             
     @property
     def kernels(self):
-        "List of kernels specified by the metakernel"
+        """
+        The kernels specified by the metakernel
+
+        Returns
+        -------
+        list of kernel filenames specified in the metakernel
+        """
         kernels = []
         with open(self.fname, "r") as file:
             look_for_kernels = False
@@ -155,11 +164,8 @@ class MetaKernel(KernelBase):
         Loads the kernels specified by the metakernel
         """
         for kernel in self.kernels:
-            try:
-                Kernel(self.fname.parent / Path(kernel))
-            except ValueError:
-                print(f"Filetype {Path(kernel).suffix} not supported yet\n")
-                
+            KernelBase(self.fname.parent / kernel)
+            
     
     @property
     def kernels_exist(self):
@@ -167,7 +173,7 @@ class MetaKernel(KernelBase):
         Return `True` if all kernels in the metakernel exist.
         """
         for kernel in self.kernels:
-            kernel_path = self.fname.parent / Path(kernel)
+            kernel_path = self.fname.parent / kernel
             if not kernel_path.exists:
                 return False
         return True
