@@ -120,28 +120,6 @@ class MetaKernel(KernelBase):
             self.load_kernels()
         else:
             print("Kernels are not yet loaded")
-        
-    def change_path_value(self):
-        """
-        Changes the PATH_VALUES parameter in the .tm file
-        to point to the same folder as the .tm file.
-        """
-        #open the file
-        with open(self.fname, 'r') as file:
-            # read a list of lines into data
-            data = file.readlines()
-
-        #find the line with PATH_VALUES = ( '..' )
-        for i, line in enumerate(data):
-            line_split = line.split()
-            if len(line_split) > 1 and line_split[0] == 'PATH_VALUES':
-                if line_split[-2] == "'..'":
-                    #replace the ".." with the folder path
-                    data[i] = data[i].replace('..', str(self.fname.parent))
-        
-        #write over the original file
-        with open(self.fname, 'w') as file:
-            file.writelines( data )
             
     @property
     def kernels(self):
@@ -182,6 +160,8 @@ class MetaKernel(KernelBase):
             except ValueError:
                 print(f"Filetype {Path(kernel).suffix} not supported yet\n")
                 
+    
+    @property
     def kernels_exist(self):
         """
         Return `True` if all kernels in the metakernel exist.
