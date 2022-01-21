@@ -158,7 +158,7 @@ class MetaKernel(KernelBase):
                     look_for_kernels = False
                     break
                 
-                if look_for_kernels == True and len(line_split) > 0:
+                if look_for_kernels and len(line_split) > 0:
                     # find the filename for the kernel. 
                     # The slicing removes the $KERNEL and the final '
                     kernel_fname = line_split[0][9:-1]
