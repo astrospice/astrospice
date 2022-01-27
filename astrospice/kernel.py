@@ -116,6 +116,11 @@ class MetaKernel(KernelBase):
     def __init__(self, fname):
         """
         Loading the metakernel will load all the kernels specified, if they exist.
+        
+        Parameters
+        ----------
+        fname : str, pathlib.Path
+            Path to the metakernel file.
         """
         self._fname = fname
         if self.kernels_exist:
@@ -130,7 +135,7 @@ class MetaKernel(KernelBase):
 
         Returns
         -------
-        list of kernel filenames specified in the metakernel
+        kernels : list of kernel Paths
         """
         kernels = []
         with open(self.fname, "r") as file:
