@@ -151,11 +151,9 @@ class MetaKernel(KernelBase):
                     #do not add empty lines
                     if kernel_fname != '':
                         #slice removes the first \
-                        kernels.append(kernel_fname[1:])
-                
+                        kernels.append(self.fname.parent / kernel_fname[1:])
                 if len(line_split) > 1 and line_split[0] == 'KERNELS_TO_LOAD':
                     look_for_kernels = True
-        
         return kernels
     
     def load_kernels(self):
@@ -163,8 +161,7 @@ class MetaKernel(KernelBase):
         Loads the kernels specified by the metakernel
         """
         for kernel in self.kernels:
-            KernelBase(self.fname.parent / kernel)
-            
+            KernelBase(kernel)
     
     @property
     def kernels_exist(self):
@@ -172,7 +169,6 @@ class MetaKernel(KernelBase):
         Return `True` if all kernels in the metakernel exist.
         """
         for kernel in self.kernels:
-            kernel_path = self.fname.parent / kernel
-            if not kernel_path.exists():
+            if not kernel.exists():
                 return False
         return True
