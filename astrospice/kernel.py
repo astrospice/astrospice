@@ -23,7 +23,6 @@ class KernelBase:
     """
     def __init__(self, fname):
         self._fname = fname
-        print(self._fname_str)
         spiceypy.furnsh(self._fname_str)
 
     def __init_subclass__(cls):
