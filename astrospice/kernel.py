@@ -173,6 +173,6 @@ class MetaKernel(KernelBase):
         """
         for kernel in self.kernels:
             kernel_path = self.fname.parent / kernel
-            if not kernel_path.exists:
+            if not kernel_path.exists():
                 return False
         return True
