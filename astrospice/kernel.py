@@ -103,6 +103,7 @@ class SPKKernel(KernelBase):
         coverage = [t for t in spiceypy.spkcov(self._fname_str, body.id)]
         return Time(coverage, format='et').utc
 
+
 class MetaKernel(KernelBase):
     """
     A class for a single .tm kernel.
@@ -112,11 +113,11 @@ class MetaKernel(KernelBase):
     https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/kernel.html#Additional%20Meta-kernel%20Specifications
     """
     _file_extension = '.tm'
-    
+
     def __init__(self, fname):
         """
         Loading the metakernel will load all the kernels specified, if they exist.
-        
+
         Parameters
         ----------
         fname : str, pathlib.Path
@@ -127,7 +128,7 @@ class MetaKernel(KernelBase):
             self.load_kernels()
         else:
             print("Kernels are not yet loaded")
-            
+
     @property
     def kernels(self):
         """
@@ -140,34 +141,34 @@ class MetaKernel(KernelBase):
         kernels = []
         with open(self.fname, "r") as file:
             look_for_kernels = False
-            for  line in file:
-                #split by whitespace
+            for line in file:
+                # split by whitespace
                 line_split = line.split()
-                
+
                 # now find the ) bracket by itself, this is the end of kernels to load
                 if len(line_split) >= 1 and line_split[0] == ')':
                     look_for_kernels = False
                     break
-                
+
                 if look_for_kernels and len(line_split) > 0:
-                    # find the filename for the kernel. 
+                    # find the filename for the kernel.
                     # The slicing removes the $KERNEL and the final '
                     kernel_fname = line_split[0][9:-1]
-                    #do not add empty lines
+                    # do not add empty lines
                     if kernel_fname != '':
-                        #slice removes the first \
+                        # slice removes the first \
                         kernels.append(self.fname.parent / kernel_fname[1:])
                 if len(line_split) > 1 and line_split[0] == 'KERNELS_TO_LOAD':
                     look_for_kernels = True
         return kernels
-    
+
     def load_kernels(self):
         """
         Loads the kernels specified by the metakernel
         """
         for kernel in self.kernels:
             KernelBase(kernel)
-    
+
     @property
     def kernels_exist(self):
         """
