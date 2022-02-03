@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from spiceypy.utils.exceptions import SpiceFILEREADERROR
 
 from astrospice import Kernel
 from astrospice.kernel import MetaKernel
@@ -30,10 +31,22 @@ def test_kernels_exist(tmp_path):
     fname = tmp_path / "temp_mk.tm"
     fname.write_text(METAKERNEL_CONTENT)
     mk = MetaKernel(fname)
-    print(mk.kernels)
     assert not mk.kernels_exist
     # now add the file and check
     extra_kernel = tmp_path / 'test_subfolder' / 'test_kernel.bsp'
     extra_kernel.parent.mkdir()
     extra_kernel.write_text(" ")
     assert mk.kernels_exist
+
+
+def test_metakernels_load(tmp_path):
+    fname = tmp_path / "temp_mk.tm"
+    fname.write_text(METAKERNEL_CONTENT)
+    mk = MetaKernel(fname)
+    extra_kernel = tmp_path / 'test_subfolder' / 'test_kernel.bsp'
+    extra_kernel.parent.mkdir()
+    extra_kernel.write_text(" ")
+    # should get a SpiceFILEREADFAILED error
+    with pytest.raises(Exception) as exc:
+        mk.load_kernels()
+        assert isinstance(exc.value, SpiceFILEREADERROR)
