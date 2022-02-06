@@ -55,7 +55,8 @@ def test_metakernels_load(example_mk, tmp_path):
         assert isinstance(exc.value, SpiceFILEREADERROR)
 
 
-def test_metekernels_init(example_mk):
+def test_metakernels_init(example_mk, tmp_path):
+    create_example_kernel(tmp_path)
     with pytest.raises(Exception) as exc:
         MetaKernel(example_mk)
         assert isinstance(exc.value, SpiceFILEREADERROR)
