@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from spiceypy.utils.exceptions import SpiceFILEREADFAILED
+from spiceypy.utils.exceptions import SpiceFILEREADFAILED, SpiceNOSUCHFILE
 
 from astrospice import Kernel
 from astrospice.kernel import MetaKernel
@@ -26,7 +26,8 @@ def create_example_kernel(tmp_path):
 
 def test_unkown_extension(tmp_path):
     fpath = tmp_path / 'test.xyz'
-    with pytest.raises(ValueError, match='Filename extension ".xyz" not in'):
+
+    with pytest.raises(SpiceNOSUCHFILE):
         Kernel(fpath)
 
 
