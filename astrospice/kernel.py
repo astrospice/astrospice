@@ -124,7 +124,7 @@ class MetaKernel(KernelBase):
             Path to the metakernel file.
         """
         self._fname = fname
-        if self.kernels_exist:
+        if self.all_kernels_exist:
             self.load_kernels()
         else:
             print("Kernels are not yet loaded")

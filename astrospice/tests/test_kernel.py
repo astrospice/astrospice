@@ -39,11 +39,11 @@ def test_metakernel_kernels(example_mk):
     assert kernels[0].parent.stem == 'test_subfolder'
 
 
-def test_kernels_exist(example_mk, tmp_path):
+def test_all_kernels_exist(example_mk, tmp_path):
     mk = MetaKernel(example_mk)
-    assert not mk.kernels_exist
+    assert not mk.all_kernels_exist
     create_example_kernel(tmp_path)
-    assert mk.kernels_exist
+    assert mk.all_kernels_exist
 
 
 def test_metakernels_load(example_mk, tmp_path):
