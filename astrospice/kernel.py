@@ -170,7 +170,7 @@ class MetaKernel(KernelBase):
             KernelBase(kernel)
 
     @property
-    def kernels_exist(self):
+    def all_kernels_exist(self):
         """
         Return `True` if all kernels in the metakernel exist.
         """
