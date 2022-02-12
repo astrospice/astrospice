@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from spiceypy.utils.exceptions import SpiceFILEREADERROR
+from spiceypy.utils.exceptions import SpiceFILEREADFAILED
 
 from astrospice import Kernel
 from astrospice.kernel import MetaKernel
@@ -50,13 +50,11 @@ def test_metakernels_load(example_mk, tmp_path):
     mk = MetaKernel(example_mk)
     create_example_kernel(tmp_path)
     # should get a SpiceFILEREADFAILED error
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(SpiceFILEREADFAILED):
         mk.load_kernels()
-        assert isinstance(exc.value, SpiceFILEREADERROR)
 
 
 def test_metakernels_init(example_mk, tmp_path):
     create_example_kernel(tmp_path)
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(SpiceFILEREADFAILED):
         MetaKernel(example_mk)
-        assert isinstance(exc.value, SpiceFILEREADERROR)
