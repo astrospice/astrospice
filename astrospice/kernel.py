@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import spiceypy
@@ -8,6 +9,7 @@ from astrospice.body import Body
 __all__ = ['KernelBase', 'Kernel', 'SPKKernel']
 
 
+log = logging.getLogger(__name__)
 # Mapping from filename extension to Kernel class
 _REGISTRY = {}
 
@@ -50,13 +52,17 @@ def Kernel(fname):
     Returns
     -------
     kernel : KernelBase
+        If the kernel type is known then this will be a sub-class of
+        KernelBase.
     """
     extension = Path(fname).suffix
     if extension in _REGISTRY:
         return _REGISTRY[extension](fname)
     else:
-        raise ValueError(f'Filename extension "{extension}" not in '
-                         f'known extensions: {list(_REGISTRY.keys())}')
+        log.debug(f'Filename extension "{extension}" not in '
+                  f'known extensions: {list(_REGISTRY.keys())}, '
+                  'but furnishing with SPICE anyway.')
+        return KernelBase(fname)
 
 
 class SPKKernel(KernelBase):
