@@ -1,54 +1,23 @@
-"""
-`astrospice.registry`
----------------------
-A registry of SPICE kernels for various missions.
-"""
 import abc
-from collections import defaultdict
-from dataclasses import dataclass
 
-import astropy.time
 import parfive
 from astropy.table import Table, vstack
 from astropy.time import Time
 
 from astrospice.config import get_cache_dir
 from astrospice.kernel import Kernel
+from .base import BaseKernelRegistry
 
-__all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase', 'registry']
+__all__ = ['registry', 'KernelRegistry', 'RemoteKernelsBase']
 
 
-class KernelRegistry:
+class KernelRegistry(BaseKernelRegistry):
     """
     A registry of remote SPICE kernels.
 
     Kernels are stored in the ``_kernels`` property, which is a dict with
     structure _kernels[body][type] -> RemoteKernelsBase
     """
-    def __init__(self):
-        self._kernels = defaultdict(dict)
-
-    def __str__(self):
-        return f'Known kernels: {self.bodies}'
-
-    def __getitem__(self, idx):
-        return self._kernels[idx]
-
-    @property
-    def bodies(self):
-        """
-        Bodies with available kernels.
-        """
-        return list(self._kernels.keys())
-
-    def check_body(self, body):
-        """
-        Raise an error if ``body`` isn't in the registry.
-        """
-        if body not in self.bodies:
-            raise ValueError(
-                f'{body} not in list of registered bodies: {self.bodies}')
-
     def get_available_kernels(self, body):
         """
         Get a list of all the available kernels.
@@ -99,8 +68,8 @@ class KernelRegistry:
         body : str
             Spacecraft body.
         type : str
-            ``'recon'`` or ``'predict'`` to downloaded reconstructed or predicted
-            kernels respectively.
+            ``'recon'`` or ``'predict'`` to downloaded reconstructed or
+            predicted kernels respectively.
         version : int, optional
             If given, get only kernels with this version.
 
@@ -118,49 +87,6 @@ class KernelRegistry:
 
 
 registry = KernelRegistry()
-
-
-@dataclass
-class RemoteKernel:
-    """
-    A single kernel available on a remote server.
-    """
-    url: str
-    start_time: astropy.time.Time
-    end_time: astropy.time.Time
-    version: int
-
-    def __str__(self):
-        return '\n'.join([f'URL: {self.url}',
-                          f'Start time: {self.start_time.iso}',
-                          f'End time: {self.end_time.iso}',
-                          f'Version: {self.version}'])
-
-    def __lt__(self, other):
-        return self.version < other.version
-
-    @property
-    def fname(self):
-        """Kernel filename."""
-        return self.url.split('/')[-1]
-
-    def fetch(self):
-        """
-        Get the kernel. If not present locally, will be downloaded.
-
-        This also implicitly furnishes the kernel with SPICE.
-
-        Returns
-        -------
-        astrospice.KernelBase
-        """
-        local_path = get_cache_dir() / self.fname
-        if not local_path.exists():
-            dl = parfive.Downloader()
-            dl.enqueue_file(self.url, get_cache_dir(), self.fname)
-            dl.download()
-
-        return Kernel(local_path)
 
 
 class RemoteKernelsBase(abc.ABC):
