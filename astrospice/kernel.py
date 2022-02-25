@@ -5,7 +5,7 @@ from astropy.time import Time
 
 from astrospice.body import Body
 
-__all__ = ['KernelBase', 'Kernel', 'SPKKernel']
+__all__ = ['KernelBase', 'Kernel', 'SPKKernel', 'MetaKernel']
 
 
 # Mapping from filename extension to Kernel class
