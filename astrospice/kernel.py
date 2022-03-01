@@ -1,10 +1,11 @@
+import abc
 import logging
 from pathlib import Path
-import abc
+
 import parfive
 import spiceypy
 from astropy.time import Time
-from astrospice.config import get_cache_dir
+
 from astrospice.body import Body
 
 __all__ = ['KernelBase', 'Kernel', 'SPKKernel', 'MetaKernel']
@@ -169,23 +170,21 @@ class MetaKernel(KernelBase):
                 if len(line_split) > 1 and line_split[0] == 'KERNELS_TO_LOAD':
                     look_for_kernels = True
         return kernels
-    
+
     @abc.abstractproperty
     def base_url(self):
         """
         The url to get the kernels from. This should be an abstract method
         that is specified by each child metakernel class for each spacecraft.
         """
-        pass
-    
+
     @abc.abstractproperty
     def mk_folder(self):
         """
         The folder to store the metakernel in. Need to have separate folders for
         different spacecraft.
         """
-        pass
-    
+
     @property
     def kernel_urls(self):
         """
@@ -197,23 +196,22 @@ class MetaKernel(KernelBase):
         """
         urls = []
         for fname in self.kernels:
-            #get the folder and fname e.g. spk/kernel_name.bsp
+            # get the folder and fname e.g. spk/kernel_name.bsp
             folder_and_fname = fname.parts[-2] + "/" + fname.name
             url = self.base_url + folder_and_fname
             urls.append(url)
-            
+
         return urls
 
     def download_kernels(self):
         """
         Downloads the kernels specified in the metakernel
         """
+        dl = parfive.Downloader(file_progress=False)
         for url, kernel_path in zip(self.kernel_urls, self.kernels):
             if not kernel_path.exists():
-                print(url)
-                dl = parfive.Downloader()
                 dl.enqueue_file(url, kernel_path.parent, kernel_path.name)
-                dl.download()
+        dl.download()
 
     def load_kernels(self):
         """
