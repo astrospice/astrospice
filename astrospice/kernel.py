@@ -135,8 +135,13 @@ class MetaKernel(KernelBase):
         if not self.all_kernels_exist:
             # try and download the kernels
             print("Downloading Kernels")
-            self.download_kernels()
-        self.load_kernels()
+            try:
+                self.download_kernels()
+            except NotImplementedError:
+                # loading just this class and not a child class
+                pass
+        if self.all_kernels_exist:
+            self.load_kernels()
 
     @property
     def kernels(self):
@@ -177,6 +182,7 @@ class MetaKernel(KernelBase):
         The url to get the kernels from. This should be an abstract method
         that is specified by each child metakernel class for each spacecraft.
         """
+        raise NotImplementedError
 
     @abc.abstractproperty
     def mk_folder(self):
@@ -184,6 +190,7 @@ class MetaKernel(KernelBase):
         The folder to store the metakernel in. Need to have separate folders for
         different spacecraft.
         """
+        raise NotImplementedError
 
     @property
     def kernel_urls(self):
