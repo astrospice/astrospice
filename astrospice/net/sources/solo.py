@@ -3,8 +3,10 @@ from urllib.request import urlopen
 from astropy.time import Time
 from bs4 import BeautifulSoup
 
-from astrospice.net.reg import RemoteKernel, RemoteKernelsBase, MetaKernel, RemoteMetaKernel
+from astrospice.net.reg import RemoteKernel, RemoteKernelsBase, RemoteMetaKernel
+from astrospice.kernel import MetaKernel
 from astrospice.config import get_cache_dir
+
 
 __all__ = ['SolarOrbiterPredict']
 
@@ -62,7 +64,20 @@ class SolarOrbiterPredict(RemoteKernelsBase):
         version = int(fname[4][1:])
         return True, start_time, end_time, version
 
-class SolarOrbiterMetakernel(RemoteKernelsBase):
+class SolarOrbiterMetaKernel(MetaKernel):
+    
+    @property
+    def base_url(self):
+        """url for Solar Orbiter Kernels"""
+        return 'http://spiftp.esac.esa.int/data/SPICE/SOLAR-ORBITER/kernels/'
+    
+    @property
+    def mk_folder(self):
+        """url for Solar Orbiter Kernels"""
+        return 'solar orbiter'
+    
+    
+class SolarOrbiterRemoteMetakernel(RemoteMetaKernel):
     """Will load the metakernel and all the subsequent kernels listed.
     
     To start with I will just give it a local path to the metakernel.
@@ -107,10 +122,8 @@ class SolarOrbiterMetakernel(RemoteKernelsBase):
                         most_recent_time = matches[1]
                         most_recent_kernel_fname = fname
                         most_recent_kernel_matches = matches
-        latest_metakernel = RemoteMetaKernel(f'{base_url}/{most_recent_kernel_fname}', *most_recent_kernel_matches[1:])
+        latest_metakernel = RemoteKernel(f'{base_url}/{most_recent_kernel_fname}', *most_recent_kernel_matches[1:])
         latest_metakernel.fetch()
-        latest_metakernel.edit_local_metakernel()
-        #then return a local metakernel object
         return latest_metakernel
 
     
@@ -142,18 +155,3 @@ class SolarOrbiterMetakernel(RemoteKernelsBase):
         time = Time.strptime(time, '%Y%m%d')
         version = int(fname[3][1:])
         return True, time, version
-
-        
-        #change the kernel attribute in the metakernel file
-        
-        
-        #cycle through the listed files in the metakernel and download them
-        
-        #these have the same https address as the file system for my local copy
-        #so save in this structure too
-        
-        #load as KernelBase objets
-        
-        #if .spk then load as one of those objects
-        print('Downloading metakernel file')
-        
