@@ -30,7 +30,7 @@ Available kernels for individual bodies can be queried using
   >>> astrospice.registry.get_available_kernels('psp')
   <Table length=...>
   Mission   Type  Version        Start time               End time
-    str3    str7   int64            Time                    Time
+    str3    str7   int64            ....                    ....
   ------- ------- ------- ----------------------- -----------------------
   ...
       psp predict      38 2018-08-12 00:00:00.000 2025-08-31 00:00:00.000
@@ -40,7 +40,6 @@ Available kernels for individual bodies can be queried using
   ...
       psp   recon       1 2021-07-23 00:00:00.000 2021-09-04 00:00:00.000
       psp   recon       1 2021-05-24 00:00:00.000 2021-07-23 00:00:00.000
-      psp   recon       1 2021-03-25 00:00:00.000 2021-05-25 00:00:00.000
   ...
       psp   recon       1 2019-01-20 00:00:00.000 2019-04-16 00:00:00.000
       psp   recon       1 2018-10-08 00:00:00.000 2019-01-20 00:00:00.000
