@@ -166,7 +166,7 @@ class RemoteKernel:
 class RemoteKernelsBase(abc.ABC):
     def __init_subclass__(cls):
         registry._kernels[cls.body][cls.type] = cls()
-        assert cls.type in ['predict', 'recon']
+        assert cls.type in ['predict', 'recon', 'meta']
 
     def get_latest_kernel(self):
         """
@@ -214,8 +214,9 @@ class RemoteKernelsBase(abc.ABC):
                 msg += f', version={version}'
             raise ValueError(msg)
 
-        if self.type == 'predict':
+        if self.type == 'predict' or self.type =='meta':
             # Only get the most recent version
+            # should this not be get_latest_kernel()? or at least sorted(kernels)[-1]
             kernels = [max(kernels)]
         dl = parfive.Downloader()
         for k in kernels:
