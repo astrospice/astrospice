@@ -18,19 +18,18 @@ class PSPPredict(RemoteKernelsBase):
         -------
         list[RemoteKernel]
         """
-        page = urlopen('https://sppgway.jhuapl.edu/lpredict_ephem')
+        page = urlopen('https://spdf.gsfc.nasa.gov/pub/data/psp/ephemeris/spice/Long_Term_Predicted_Ephemeris/')
         soup = BeautifulSoup(page, 'html.parser')
 
         kernel_urls = []
         for link in soup.find_all('a'):
             href = link.get('href')
-            if href is not None and href.startswith('/MOC/ephemerides//'):
+            if href is not None and href.startswith('spp'):
                 fname = href.split('/')[-1]
                 matches = self.matches(fname)
                 if matches:
                     kernel_urls.append(
-                        RemoteKernel(f'https://sppgway.jhuapl.edu/{href}',
-                                     *matches[1:]))
+                        RemoteKernel(f'https://spdf.gsfc.nasa.gov/pub/data/psp/ephemeris/spice/Long_Term_Predicted_Ephemeris/{href}', *matches[1:]))
 
         return kernel_urls
 

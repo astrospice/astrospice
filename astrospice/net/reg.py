@@ -4,16 +4,23 @@
 A registry of SPICE kernels for various missions.
 """
 import abc
+import os
 from collections import defaultdict
 from dataclasses import dataclass
 
 import astropy.time
-import parfive
-from astropy.table import Table, vstack
-from astropy.time import Time
 
-from astrospice.config import get_cache_dir
-from astrospice.kernel import Kernel
+# disable splitting the download since psp predict kernel server does not give a content-length in the response
+# this will not be necessary if parfive is changed
+
+
+os.environ["PARFIVE_DISABLE_RANGE"] = "1"
+import parfive  # noqa: E402
+from astropy.table import Table, vstack  # noqa: E402
+from astropy.time import Time  # noqa: E402
+
+from astrospice.config import get_cache_dir  # noqa: E402
+from astrospice.kernel import Kernel  # noqa: E402
 
 __all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase', 'registry']
 
