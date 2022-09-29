@@ -13,6 +13,11 @@ New features
   will still be furnished with the kernel.
 - Added Cassini to the kernel registry.
 
+Updated minimum dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- Bumped minimum version of astropy to 5.0
+- Bumped minimum version of Python to 3.8
+
 0.1.0
 -----
 First release of astrospice.
