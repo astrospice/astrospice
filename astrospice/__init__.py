@@ -8,6 +8,6 @@ from .config import *
 from .coords import *
 from .kernel import *
 from .net import registry
-from .version import __version__
+from ._version import __version__
 
 _setup_generic_files()
