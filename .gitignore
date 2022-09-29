@@ -10,3 +10,5 @@ docs/auto_examples
 .hypothesis
 
 dist/*
+
+astrospice/_version.py

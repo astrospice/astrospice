@@ -20,7 +20,7 @@ jobs:
           - name: linux py38-mindeps
             os: ubuntu-20.04
             python-version: '3.8'
-            pip-extras: '"astropy<4.3"'
+            pip-extras: '"astropy<5.1"'
 
           - name: linux py39
             os: ubuntu-20.04
