@@ -8,13 +8,12 @@ from collections import defaultdict
 from dataclasses import dataclass
 
 import astropy.time
+import parfive
+from astropy.table import Table, vstack
+from astropy.time import Time
 
-import parfive  # noqa: E402
-from astropy.table import Table, vstack  # noqa: E402
-from astropy.time import Time  # noqa: E402
-
-from astrospice.config import get_cache_dir  # noqa: E402
-from astrospice.kernel import Kernel  # noqa: E402
+from astrospice.config import get_cache_dir
+from astrospice.kernel import Kernel
 
 __all__ = ['KernelRegistry', 'RemoteKernel', 'RemoteKernelsBase', 'registry']
 
