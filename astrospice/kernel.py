@@ -132,8 +132,12 @@ class MetaKernel(KernelBase):
         self._fname = fname
         if self.all_kernels_exist:
             self.load_kernels()
-        else:
-            print("Kernels are not yet loaded")
+
+    def __repr__(self):
+        return f"MetaKernel('{self._fname}')"
+
+    def __len__(self):
+        return len(self.kernels)
 
     @property
     def kernels(self):
