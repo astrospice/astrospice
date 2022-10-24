@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.2.1
+-----
+Updated docs
+~~~~~~~~~~~~
+- Added meta kernel documentation to the guide.
+
 0.2.0
 -----
 New features
