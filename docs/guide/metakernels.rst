@@ -1,6 +1,6 @@
 Using meta-kernels
 ==================
-Meta-kernels contain a collection of other kenels to either download or load into SPICE.
+Meta-kernels contain a collection of other kernels to either download or load into SPICE.
 astrospice supports loading meta-kernels and using them to download and load their listed kernels into SPICE.
 
 First lets manually download a meta-kernel for Solar Oribter::

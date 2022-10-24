@@ -129,5 +129,5 @@ transform them into a heliocentric coordinate system provided by sunpy::
 Solar system ephemeris
 ~~~~~~~~~~~~~~~~~~~~~~
 If a JPL ephemeris is set in astropy, astrospice will automatically use it. If
-not, the 'de440s' ephemeris will be used by deafult. To set a different
+not, the 'de440s' ephemeris will be used by default. To set a different
 ephemeris, use the :func:`astrospice.set_solar_system_ephem` function.
