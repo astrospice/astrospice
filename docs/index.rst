@@ -21,4 +21,5 @@ orientations. For more information, see https://naif.jpl.nasa.gov/naif/
    guide
    auto_examples/index
    reference
+   changelog
    acknowledging
