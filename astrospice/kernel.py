@@ -1,6 +1,8 @@
+import abc
 import logging
 from pathlib import Path
 
+import parfive
 import spiceypy
 from astropy.time import Time
 
@@ -130,6 +132,14 @@ class MetaKernel(KernelBase):
             Path to the metakernel file.
         """
         self._fname = fname
+        if not self.all_kernels_exist:
+            # try and download the kernels
+            print("Downloading Kernels")
+            try:
+                self.download_kernels()
+            except NotImplementedError:
+                # if haven't defined the child class yet, then it just passes
+                pass
         if self.all_kernels_exist:
             self.load_kernels()
 
@@ -171,6 +181,49 @@ class MetaKernel(KernelBase):
                 if len(line_split) > 1 and line_split[0] == 'KERNELS_TO_LOAD':
                     look_for_kernels = True
         return kernels
+
+    @abc.abstractproperty
+    def base_url(self):
+        """
+        The url to get the kernels from. This should be an abstract method
+        that is specified by each child metakernel class for each spacecraft.
+        """
+        raise NotImplementedError
+
+    @abc.abstractproperty
+    def mk_folder(self):
+        """
+        The folder to store the metakernel in. Need to have separate folders for
+        different spacecraft.
+        """
+        raise NotImplementedError
+
+    @property
+    def kernel_urls(self):
+        """
+        The kernel urls specified by the metakernel
+        Returns
+        -------
+        kernels : list of kernel urls
+        """
+        urls = []
+        for fname in self.kernels:
+            # get the folder and fname e.g. spk/kernel_name.bsp
+            folder_and_fname = fname.parts[-2] + "/" + fname.name
+            url = self.base_url + folder_and_fname
+            urls.append(url)
+
+        return urls
+
+    def download_kernels(self):
+        """
+        Downloads the kernels specified in the metakernel
+        """
+        dl = parfive.Downloader(file_progress=False)
+        for url, kernel_path in zip(self.kernel_urls, self.kernels):
+            if not kernel_path.exists():
+                dl.enqueue_file(url, kernel_path.parent, kernel_path.name)
+        dl.download()
 
     def load_kernels(self):
         """
