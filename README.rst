@@ -1,3 +1,5 @@
+**astrospice is no longer maintained and is archived**
+
 A package for finding SPICE kernels and using them with astropy coordinates.
 ----------------------------------------------------------------------------
 |Tests| |Coverage| |Docs|
